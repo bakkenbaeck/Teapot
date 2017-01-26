@@ -6,7 +6,7 @@
 //  Copyright © 2017 B&B. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <UIKit/UIKit.h>
 
 //! Project version number for Teapot.
 FOUNDATION_EXPORT double TeapotVersionNumber;
