@@ -56,6 +56,7 @@ open class Teapot {
     ///
     /// - Parameters:
     ///   - path: The relative path for the API call. Appended to the baseURL.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
@@ -69,6 +70,7 @@ open class Teapot {
     ///
     /// - Parameters:
     ///   - path: The relative path for the API call. Appended to the baseURL.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
@@ -82,6 +84,7 @@ open class Teapot {
     ///
     /// - Parameters:
     ///   - path: The relative path for the API call. Appended to the baseURL.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
@@ -103,26 +106,28 @@ open class Teapot {
     /// - Parameters:
     ///   - verb: The HTTP verb: GET/POST/PUT/DELETE, as an enum value.
     ///   - path: The relative path for the API call.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
     func execute(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
 
-        let request = self.request(path: path, verb: verb, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
+        let request = self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
         self.runTask(with: request, completion: completion)
     }
 
     /// Create a URL request for a given set of parameters.
     ///
     /// - Parameters:
-    ///   - path: The relative path for the API call.
     ///   - verb: The HTTP verb: GET/POST/PUT/DELETE, as an enum value.
+    ///   - path: The relative path for the API call.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     /// - Returns: URLRequest
-    func request(path: String, verb: Verb, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) -> URLRequest {
+    func request(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) -> URLRequest {
         var request = URLRequest(url: self.baseURL.appendingPathComponent(path), cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeoutInterval)
         request.allowsCellularAccess = allowsCellular
         request.httpMethod = verb.rawValue
