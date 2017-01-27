@@ -30,7 +30,7 @@ class TeapotTests: XCTestCase {
         var finishCounter = 0
 
         // pass
-        self.teapot?.get("get") { (result) in
+        self.teapot?.get("/get") { (result) in
 
             switch result {
             case .success(let json, let response):
@@ -49,14 +49,13 @@ class TeapotTests: XCTestCase {
         }
 
         // fail
-        self.teapot?.put("get") { (result) in
+        self.teapot?.put("/get") { (result) in
 
             switch result {
-            case .success(let json, let response):
-                XCTAssertEqual(response.statusCode, 405)
-                XCTAssertNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .success(_, _):
+                break
+            case .failure(_, _, let error):
+                XCTAssertNotNil(error)
             }
 
             XCTAssertNotNil(result)
@@ -67,11 +66,7 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.waitForExpectations(timeout: 5.0) { error in
-            if let error = error {
-                XCTAssert(false, error.localizedDescription)
-            }
-        }
+        self.waitForExpectations(timeout: 10.0)
     }
 
     func testPost() {
@@ -79,7 +74,7 @@ class TeapotTests: XCTestCase {
         var finishCounter = 0
 
         // pass
-        self.teapot?.post("post") { (result) in
+        self.teapot?.post("/post") { (result) in
 
             switch result {
             case .success(let json, let response):
@@ -98,14 +93,13 @@ class TeapotTests: XCTestCase {
         }
 
         // fail
-        self.teapot?.get("post") { (result) in
+        self.teapot?.get("/post") { (result) in
 
             switch result {
-            case .success(let json, let response):
-                XCTAssertEqual(response.statusCode, 405)
-                XCTAssertNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .success(_, _):
+                break
+            case .failure(_, _, let error):
+                XCTAssertNotNil(error)
             }
 
             XCTAssertNotNil(result)
@@ -116,11 +110,7 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.waitForExpectations(timeout: 5.0) { error in
-            if let error = error {
-                XCTAssert(false, error.localizedDescription)
-            }
-        }
+        self.waitForExpectations(timeout: 10.0)
     }
 
     /// To proper visualise this test, open http://requestb.in/wwppn4ww and ensure that the form data is there correctly
@@ -137,7 +127,7 @@ class TeapotTests: XCTestCase {
         let json = JSON(dict)
         let headers = ["HTTP-Test-value": "This string here"]
 
-        self.teapot?.post("wwppn4ww", parameters: json, headerFields: headers) { (result) in
+        self.teapot?.post("/wwppn4ww", parameters: json, headerFields: headers) { (result) in
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
@@ -153,7 +143,7 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.teapot?.put("wwppn4ww", parameters: json, headerFields: headers) { (result) in
+        self.teapot?.put("/wwppn4ww", parameters: json, headerFields: headers) { (result) in
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
@@ -169,7 +159,7 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.waitForExpectations(timeout: 5.0, handler: nil)
+        self.waitForExpectations(timeout: 10.0)
     }
 
     func testPut() {
@@ -177,55 +167,7 @@ class TeapotTests: XCTestCase {
         var finishCounter = 0
 
         // pass
-        self.teapot?.put("put") { (result) in
-
-            switch result {
-            case .success(let json, let response):
-                XCTAssertEqual(response.statusCode, 200)
-                XCTAssertNotNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
-            }
-
-            XCTAssertNotNil(result)
-
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.teapot?.post("put") { (result) in
-
-            switch result {
-            case .success(let json, let response):
-                XCTAssertEqual(response.statusCode, 405)
-                XCTAssertNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
-            }
-
-            XCTAssertNotNil(result)
-
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.waitForExpectations(timeout: 5.0) { error in
-            if let error = error {
-                XCTAssert(false, error.localizedDescription)
-            }
-        }
-    }
-
-    func testDelete() {
-        let expectation = self.expectation(description: "Delete")
-        var finishCounter = 0
-
-        // pass
-        self.teapot?.delete("delete") { (result) in
+        self.teapot?.put("/put") { (result) in
 
             switch result {
             case .success(let json, let response):
@@ -244,12 +186,37 @@ class TeapotTests: XCTestCase {
         }
 
         // fail
-        self.teapot?.delete("get") { (result) in
+        self.teapot?.post("/put") { (result) in
+
+            switch result {
+            case .success(_, _):
+                break
+            case .failure(_, _, let error):
+                XCTAssertNotNil(error)
+            }
+
+            XCTAssertNotNil(result)
+
+            finishCounter += 1
+            if finishCounter == 2 {
+                expectation.fulfill()
+            }
+        }
+
+        self.waitForExpectations(timeout: 10.0)
+    }
+
+    func testDelete() {
+        let expectation = self.expectation(description: "Delete")
+        var finishCounter = 0
+
+        // pass
+        self.teapot?.delete("/delete") { (result) in
 
             switch result {
             case .success(let json, let response):
-                XCTAssertEqual(response.statusCode, 405)
-                XCTAssertNil(json)
+                XCTAssertEqual(response.statusCode, 200)
+                XCTAssertNotNil(json)
             case .failure(_, _, _):
                 XCTAssertTrue(false)
             }
@@ -262,10 +229,43 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.waitForExpectations(timeout: 5.0) { error in
-            if let error = error {
-                XCTAssert(false, error.localizedDescription)
+        // fail
+        self.teapot?.delete("/get") { (result) in
+
+            switch result {
+            case .success(_, _):
+                break
+            case .failure(_, _, let error):
+                XCTAssertNotNil(error)
+            }
+
+            XCTAssertNotNil(result)
+
+            finishCounter += 1
+            if finishCounter == 2 {
+                expectation.fulfill()
             }
         }
+
+        self.waitForExpectations(timeout: 10.0)
+    }
+
+    func testQuery() {
+        let expectation = self.expectation(description: "Delete")
+        self.teapot?.get("/get?query=something") { (result) in
+
+            switch result {
+            case .success(let json, let response):
+                XCTAssertEqual(response.statusCode, 200)
+                XCTAssertNotNil(json)
+            case .failure(_, _, _):
+                XCTAssertTrue(false)
+            }
+
+            XCTAssertNotNil(result)
+            expectation.fulfill()
+        }
+
+        self.waitForExpectations(timeout: 10.0)
     }
 }

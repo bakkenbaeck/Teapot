@@ -3,6 +3,11 @@ import Foundation
 /// A light-weight abstraction for URLSession.
 open class Teapot {
 
+    public enum TeapotError: Error {
+        case invalidRequestPath
+        case invalidResponseStatus
+    }
+
     /// The URL request verb to be passed to the URLRequest.
     enum Verb: String {
         case get = "GET"
@@ -112,9 +117,31 @@ open class Teapot {
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
     func execute(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+        do {
+            let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-        let request = self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
-        self.runTask(with: request, completion: completion)
+
+            self.runTask(with: request) { (result) in
+                switch result {
+                case .success(let json, let response):
+                    // Handle non-2xx status as error.
+                    if response.statusCode < 200 || response.statusCode > 299 {
+                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus)
+                        completion(errorResult)
+                    } else {
+                        completion(result)
+                    }
+                default:
+                    completion(result)
+                }
+            }
+        } catch {
+            // Catch exceptions and handle them as errors for the client.
+            let response = HTTPURLResponse(url: self.baseURL.appendingPathComponent(path), statusCode: 400, httpVersion: nil, headerFields: headerFields)!
+            let result = NetworkResult(nil, response, error)
+
+            completion(result)
+        }
     }
 
     /// Create a URL request for a given set of parameters.
@@ -127,8 +154,15 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     /// - Returns: URLRequest
-    func request(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) -> URLRequest {
-        var request = URLRequest(url: self.baseURL.appendingPathComponent(path), cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeoutInterval)
+    func request(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
+        let components = path.components(separatedBy: "?")
+        var urlComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true)!
+        urlComponents.path = components.first ?? ""
+        urlComponents.percentEncodedQuery = components.last ?? ""
+
+        guard let url = urlComponents.url else { throw TeapotError.invalidRequestPath }
+
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeoutInterval)
         request.allowsCellularAccess = allowsCellular
         request.httpMethod = verb.rawValue
 
