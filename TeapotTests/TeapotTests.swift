@@ -123,6 +123,55 @@ class TeapotTests: XCTestCase {
         }
     }
 
+    /// To proper visualise this test, open http://requestb.in/wwppn4ww and ensure that the form data is there correctly
+    /// and that the HTTP header field is also there.
+    /// This test passing is no guaratee that it did. 
+    // TODO: find a way to make this fail if the server doesn't get the data.
+    func testWithParamsAndHeaders() {
+        let expectation = self.expectation(description: "Post with parameters and headers")
+        var finishCounter = 0
+
+        self.teapot = Teapot(baseURL: URL(string: "http://requestb.in")!)
+
+        let dict: [String: Any] = ["key": "value", "keyInt": 2]
+        let json = JSON(dict)
+        let headers = ["HTTP-Test-value": "This string here"]
+
+        self.teapot?.post("wwppn4ww", parameters: json, headerFields: headers) { (result) in
+            switch result {
+            case .success(let json, let response):
+                XCTAssertEqual(response.statusCode, 200)
+                XCTAssertNil(json)
+            case .failure(_, _, _):
+                XCTAssertTrue(false)
+            }
+
+            XCTAssertNotNil(result)
+            finishCounter += 1
+            if finishCounter == 2 {
+                expectation.fulfill()
+            }
+        }
+
+        self.teapot?.put("wwppn4ww", parameters: json, headerFields: headers) { (result) in
+            switch result {
+            case .success(let json, let response):
+                XCTAssertEqual(response.statusCode, 200)
+                XCTAssertNil(json)
+            case .failure(_, _, _):
+                XCTAssertTrue(false)
+            }
+
+            XCTAssertNotNil(result)
+            finishCounter += 1
+            if finishCounter == 2 {
+                expectation.fulfill()
+            }
+        }
+
+        self.waitForExpectations(timeout: 5.0, handler: nil)
+    }
+
     func testPut() {
         let expectation = self.expectation(description: "Put")
         var finishCounter = 0
