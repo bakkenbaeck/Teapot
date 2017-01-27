@@ -252,14 +252,13 @@ class TeapotTests: XCTestCase {
 
     func testQuery() {
         let expectation = self.expectation(description: "Delete")
-        self.teapot?.get("/get?query=something") { (result) in
+        self.teapot?.get("/get/?query=\("something")") { (result) in
 
             switch result {
-            case .success(let json, let response):
-                XCTAssertEqual(response.statusCode, 200)
-                XCTAssertNotNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .success(_, _):
+                break
+            case .failure(_, let response, _):
+                XCTAssertEqual(response.statusCode, 404)
             }
 
             XCTAssertNotNil(result)
