@@ -81,7 +81,6 @@ open class Teapot {
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
     open func put(_ path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
-
         self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
@@ -120,7 +119,6 @@ open class Teapot {
         do {
             let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-
             self.runTask(with: request) { (result) in
                 switch result {
                 case .success(let json, let response):
@@ -155,12 +153,14 @@ open class Teapot {
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     /// - Returns: URLRequest
     func request(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
-        let components = path.components(separatedBy: "?")
-        var urlComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true)!
-        urlComponents.path = components.first ?? ""
-        urlComponents.percentEncodedQuery = components.last ?? ""
+        guard let pathURL = URL(string: path) else { throw TeapotError.invalidRequestPath }
+        guard var baseComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
+        guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
 
-        guard let url = urlComponents.url else { throw TeapotError.invalidRequestPath }
+        baseComponents.path = pathComponents.path
+        baseComponents.query = pathComponents.query
+
+        guard let url = baseComponents.url else { throw TeapotError.invalidRequestPath }
 
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeoutInterval)
         request.allowsCellularAccess = allowsCellular
@@ -173,6 +173,7 @@ open class Teapot {
         }
 
         if let parameters = parameters {
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = parameters.data
         }
 
@@ -181,8 +182,9 @@ open class Teapot {
 
     func runTask(with request: URLRequest, completion: @escaping((NetworkResult) -> Void)) {
         let task = self.session.dataTask(with: request) { (data, response, error) in
-            var json: JSON? = nil
+            guard let response = response else { return }
 
+            var json: JSON? = nil
             if let data = data, let deserialised = try? JSONSerialization.jsonObject(with: data, options: []) {
                 if let dictionary = deserialised as? [String: Any] {
                     json = JSON(dictionary)
