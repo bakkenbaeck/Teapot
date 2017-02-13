@@ -6,6 +6,7 @@ open class Teapot {
     public enum TeapotError: Error {
         case invalidRequestPath
         case invalidResponseStatus
+        case missingImage
     }
 
     /// The URL request verb to be passed to the URLRequest.
@@ -119,7 +120,7 @@ open class Teapot {
         do {
             let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-            self.runTask(with: request) { (result) in
+            self.runTask(with: request) { (result: NetworkResult) in
                 switch result {
                 case .success(let json, let response):
                     // Handle non-2xx status as error.
@@ -141,6 +142,42 @@ open class Teapot {
             completion(result)
         }
     }
+
+    /// Downloads an image
+    ///
+    /// - Parameters:
+    ///   - path: The relative path for the API call.
+    ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
+    ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - completion: The completion block, called with a NetworkImageResult once the request completes.
+    func downloadImage(path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkImageResult) -> Void)) {
+        do {
+            let request = try self.request(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
+
+            self.runTask(with: request) { (result: NetworkImageResult) in
+                switch result {
+                case .success(let image, let response):
+                    // Handle non-2xx status as error.
+                    if response.statusCode < 200 || response.statusCode > 299 {
+                        let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus)
+                        completion(errorResult)
+                    } else {
+                        completion(result)
+                    }
+                default:
+                    completion(result)
+                }
+            }
+        } catch {
+            // Catch exceptions and handle them as errors for the client.
+            let response = HTTPURLResponse(url: self.baseURL.appendingPathComponent(path), statusCode: 400, httpVersion: nil, headerFields: headerFields)!
+            let result = NetworkImageResult(nil, response, error)
+
+            completion(result)
+        }
+    }
+
 
     /// Create a URL request for a given set of parameters.
     ///
@@ -202,5 +239,22 @@ open class Teapot {
         task.resume()
     }
 
+    func runTask(with request: URLRequest, completion: @escaping((NetworkImageResult) -> Void)) {
+        let task = self.session.dataTask(with: request) { (data, response, error) in
+            guard let response = response else { return }
+
+            var image: Image? = nil
+            if let data = data {
+                image = Image(data: data)
+            }
+
+            DispatchQueue.main.async {
+                let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
+                completion(result)
+            }
+        }
+
+        task.resume()
+    }
 }
 

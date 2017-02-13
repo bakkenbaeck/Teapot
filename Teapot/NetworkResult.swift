@@ -1,5 +1,14 @@
 import Foundation
 
+#if os(iOS) || os(watchOS) || os(tvOS)
+    import UIKit
+    public typealias Image = UIImage
+#elseif os(OSX)
+    import AppKit
+    public typealias Image = NSImage
+#endif
+
+
 /// NetworkResult
 ///
 /// This is passed by the Network layer completion blocks. The client implementation should know ahead of time if JSON is dictionary or array.
@@ -20,3 +29,20 @@ public enum NetworkResult {
         }
     }
 }
+
+public enum NetworkImageResult {
+    case success(Image, HTTPURLResponse)
+
+    case failure(HTTPURLResponse, Error)
+
+    public init(_ image: Image?, _ response: HTTPURLResponse, _ error: Error? = nil) {
+        if let error = error {
+            self = .failure(response, error)
+        } else if image == nil {
+            self = .failure(response, Teapot.TeapotError.missingImage)
+        } else {
+            self = .success(image!, response)
+        }
+    }
+}
+
