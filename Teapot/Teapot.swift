@@ -3,6 +3,11 @@ import Foundation
 /// A light-weight abstraction for URLSession.
 open class Teapot {
 
+    public enum TeapotError: Error {
+        case invalidRequestPath
+        case invalidResponseStatus
+    }
+
     /// The URL request verb to be passed to the URLRequest.
     enum Verb: String {
         case get = "GET"
@@ -56,37 +61,39 @@ open class Teapot {
     ///
     /// - Parameters:
     ///   - path: The relative path for the API call. Appended to the baseURL.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func post(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+    open func post(_ path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
 
-        self.execute(verb: .post, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+        self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
     /// Perform a PUT operation.
     ///
     /// - Parameters:
     ///   - path: The relative path for the API call. Appended to the baseURL.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func put(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
-
-        self.execute(verb: .put, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+    open func put(_ path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+        self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
     /// Perform a DELETE operation.
     ///
     /// - Parameters:
     ///   - path: The relative path for the API call. Appended to the baseURL.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func delete(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+    open func delete(_ path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
 
         self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
@@ -103,27 +110,59 @@ open class Teapot {
     /// - Parameters:
     ///   - verb: The HTTP verb: GET/POST/PUT/DELETE, as an enum value.
     ///   - path: The relative path for the API call.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    func execute(verb: Verb, path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+    func execute(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+        do {
+            let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-        let request = self.request(path: path, verb: verb, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
-        self.runTask(with: request, completion: completion)
+            self.runTask(with: request) { (result) in
+                switch result {
+                case .success(let json, let response):
+                    // Handle non-2xx status as error.
+                    if response.statusCode < 200 || response.statusCode > 299 {
+                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus)
+                        completion(errorResult)
+                    } else {
+                        completion(result)
+                    }
+                default:
+                    completion(result)
+                }
+            }
+        } catch {
+            // Catch exceptions and handle them as errors for the client.
+            let response = HTTPURLResponse(url: self.baseURL.appendingPathComponent(path), statusCode: 400, httpVersion: nil, headerFields: headerFields)!
+            let result = NetworkResult(nil, response, error)
+
+            completion(result)
+        }
     }
 
     /// Create a URL request for a given set of parameters.
     ///
     /// - Parameters:
-    ///   - path: The relative path for the API call.
     ///   - verb: The HTTP verb: GET/POST/PUT/DELETE, as an enum value.
+    ///   - path: The relative path for the API call.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     /// - Returns: URLRequest
-    func request(path: String, verb: Verb, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) -> URLRequest {
-        var request = URLRequest(url: self.baseURL.appendingPathComponent(path), cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeoutInterval)
+    func request(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
+        guard let pathURL = URL(string: path) else { throw TeapotError.invalidRequestPath }
+        guard var baseComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
+        guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
+
+        baseComponents.path = pathComponents.path
+        baseComponents.query = pathComponents.query
+
+        guard let url = baseComponents.url else { throw TeapotError.invalidRequestPath }
+
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeoutInterval)
         request.allowsCellularAccess = allowsCellular
         request.httpMethod = verb.rawValue
 
@@ -133,13 +172,19 @@ open class Teapot {
             }
         }
 
+        if let parameters = parameters {
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = parameters.data
+        }
+
         return request
     }
 
     func runTask(with request: URLRequest, completion: @escaping((NetworkResult) -> Void)) {
         let task = self.session.dataTask(with: request) { (data, response, error) in
-            var json: JSON? = nil
+            guard let response = response else { return }
 
+            var json: JSON? = nil
             if let data = data, let deserialised = try? JSONSerialization.jsonObject(with: data, options: []) {
                 if let dictionary = deserialised as? [String: Any] {
                     json = JSON(dictionary)

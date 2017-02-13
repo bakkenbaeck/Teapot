@@ -32,6 +32,17 @@ public enum JSON {
         }
     }
 
+    public var data: Data? {
+        get {
+            switch self {
+            case .array(let array):
+                return try? JSONSerialization.data(withJSONObject: array, options: [])
+            case .dictionary(let dictionary):
+                return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+            }
+        }
+    }
+
     public init(_ dictionary: [String: Any]) {
         self = .dictionary(dictionary)
     }
