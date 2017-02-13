@@ -12,6 +12,9 @@ import XCTest
 class TeapotTests: XCTestCase {
 
     var teapot: Teapot?
+
+    // WARNING: Replace this path with a newly created requestb.in address, since they're temporary.
+    var path = "/1alocxx1"
     
     override func setUp() {
         super.setUp()
@@ -30,8 +33,7 @@ class TeapotTests: XCTestCase {
         var finishCounter = 0
 
         // pass
-        self.teapot?.get("/get") { (result) in
-
+        self.teapot?.get("/get") { (result: NetworkResult) in
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
@@ -49,8 +51,7 @@ class TeapotTests: XCTestCase {
         }
 
         // fail
-        self.teapot?.put("/get") { (result) in
-
+        self.teapot?.put("/get") { (result: NetworkResult) in
             switch result {
             case .success(_, _):
                 break
@@ -93,8 +94,7 @@ class TeapotTests: XCTestCase {
         }
 
         // fail
-        self.teapot?.get("/post") { (result) in
-
+        self.teapot?.get("/post") { (result: NetworkResult) in
             switch result {
             case .success(_, _):
                 break
@@ -113,7 +113,7 @@ class TeapotTests: XCTestCase {
         self.waitForExpectations(timeout: 10.0)
     }
 
-    /// To proper visualise this test, open http://requestb.in/wwppn4ww and ensure that the form data is there correctly
+    /// To proper visualise this test, open http://requestb.in + self.path and ensure that the form data is there correctly
     /// and that the HTTP header field is also there.
     /// This test passing is no guaratee that it did. 
     // TODO: find a way to make this fail if the server doesn't get the data.
@@ -127,7 +127,7 @@ class TeapotTests: XCTestCase {
         let json = JSON(dict)
         let headers = ["HTTP-Test-value": "This string here"]
 
-        self.teapot?.post("/wwppn4ww", parameters: json, headerFields: headers) { (result) in
+        self.teapot?.post(self.path, parameters: json, headerFields: headers) { (result) in
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
@@ -143,7 +143,7 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.teapot?.put("/wwppn4ww", parameters: json, headerFields: headers) { (result) in
+        self.teapot?.put(self.path, parameters: json, headerFields: headers) { (result) in
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
@@ -252,7 +252,7 @@ class TeapotTests: XCTestCase {
 
     func testQuery() {
         let expectation = self.expectation(description: "Delete")
-        self.teapot?.get("/get/?query=\("something")") { (result) in
+        self.teapot?.get("/get/?query=\("something")") { (result: NetworkResult) in
 
             switch result {
             case .success(_, _):
@@ -263,6 +263,28 @@ class TeapotTests: XCTestCase {
 
             XCTAssertNotNil(result)
             expectation.fulfill()
+        }
+
+        self.waitForExpectations(timeout: 10.0)
+    }
+
+    func testImage() {
+        // http://icons.iconarchive.com 
+        // /icons/martz90/circle/512/app-draw-icon.png
+        self.teapot = Teapot(baseURL: URL(string: "http://icons.iconarchive.com")!)
+        let expectation = self.expectation(description: "GetImage")
+
+        self.teapot?.get("/icons/martz90/circle/512/app-draw-icon.png") { (result: NetworkImageResult) in
+            switch result {
+            case .success(let image, let response):
+                let localImage = Bundle(for: TeapotTests.self).image(forResource: "app-draw-icon")!
+
+                XCTAssertEqual(response.statusCode, 200)
+                XCTAssertEqual(image.tiffRepresentation!, localImage.tiffRepresentation!)
+                expectation.fulfill()
+            case .failure(_, _):
+                break
+            }
         }
 
         self.waitForExpectations(timeout: 10.0)
