@@ -4,7 +4,7 @@ A light-weight URLSession wrapper for building simple API clients.
 
 <img src="./teapot.png" width=257 height=200 />
 
-Teapot consists of a only three simple structures: a JSON optional-like container, a NetworkResult container and the Teapot itself, that acts as a nice thin wrapper around URLSession.
+Teapot consists of a only three simple structures: a JSON optional-like container, a NetworkResult container, and the Teapot itself, that acts as a nice thin wrapper around URLSession.
 
 ### JSON
 The `JSON` structure is simple enum with two cases: dictionary and array. The API is designed considering that the routing model should know if the JSON will be a dictionary or an array, but also to accommodate for cases where they won’t.
@@ -22,8 +22,8 @@ case .array(let ary):
 }
 ```
 
-### NetworkRessult
-The `NetworkRessult` is responsible for encapsulating the success/failure of our API request and providing us with the relevant objects for either case.
+### NetworkResult
+The `NetworkResult` is responsible for encapsulating the success/failure of our API request and providing us with the relevant objects for either case.
 
 ```swift
 self.teapot.get("path") { result in
@@ -40,7 +40,7 @@ self.teapot.get("path") { result in
 ```
 
 ### Teapot itself
-Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post` , a `put` and a `delete` method. It also has a stub `patch` method if your API interface requires it.
+Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method. It also has a stub `patch` method if your API interface requires it.
 
 ### Example API client
 
