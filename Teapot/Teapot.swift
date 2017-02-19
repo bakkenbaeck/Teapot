@@ -243,7 +243,11 @@ open class Teapot {
 
     func runTask(with request: URLRequest, completion: @escaping((NetworkImageResult) -> Void)) {
         let task = self.session.dataTask(with: request) { (data, response, error) in
-            guard let response = response else { return }
+            guard let response = response else {
+                NSLog(error?.localizedDescription ?? "Fatal error with request: \(request).")
+
+                return
+            }
 
             var image: Image? = nil
             if let data = data {
