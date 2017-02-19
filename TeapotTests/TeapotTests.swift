@@ -14,7 +14,7 @@ class TeapotTests: XCTestCase {
     var teapot: Teapot?
 
     // WARNING: Replace this path with a newly created requestb.in address, since they're temporary.
-    var path = "/1alocxx1"
+    var path = "/y8vhbpy8"
     
     override func setUp() {
         super.setUp()
@@ -132,7 +132,7 @@ class TeapotTests: XCTestCase {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertNil(json)
-            case .failure(_, _, _):
+            case .failure(let json, let response, let error):
                 XCTAssertTrue(false)
             }
 
@@ -271,10 +271,10 @@ class TeapotTests: XCTestCase {
     func testImage() {
         // http://icons.iconarchive.com 
         // /icons/martz90/circle/512/app-draw-icon.png
-        self.teapot = Teapot(baseURL: URL(string: "http://icons.iconarchive.com")!)
         let expectation = self.expectation(description: "GetImage")
+        let url = URL(string: "http://icons.iconarchive.com/icons/martz90/circle/512/app-draw-icon.png")!
 
-        self.teapot?.get("/icons/martz90/circle/512/app-draw-icon.png") { (result: NetworkImageResult) in
+        Teapot(baseURL: url).get() { (result: NetworkImageResult) in
             switch result {
             case .success(let image, let response):
                 let localImage = Bundle(for: TeapotTests.self).image(forResource: "app-draw-icon")!

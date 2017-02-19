@@ -151,9 +151,9 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkImageResult once the request completes.
-    func downloadImage(path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkImageResult) -> Void)) {
+    func downloadImage(headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkImageResult) -> Void)) {
         do {
-            let request = try self.request(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
+            let request = try self.request(verb: .get, path: nil, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
             self.runTask(with: request) { (result: NetworkImageResult) in
                 switch result {
@@ -171,7 +171,7 @@ open class Teapot {
             }
         } catch {
             // Catch exceptions and handle them as errors for the client.
-            let response = HTTPURLResponse(url: self.baseURL.appendingPathComponent(path), statusCode: 400, httpVersion: nil, headerFields: headerFields)!
+            let response = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: headerFields)!
             let result = NetworkImageResult(nil, response, error)
 
             completion(result)
@@ -189,13 +189,15 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     /// - Returns: URLRequest
-    func request(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
-        guard let pathURL = URL(string: path) else { throw TeapotError.invalidRequestPath }
+    func request(verb: Verb, path: String? = nil, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
         guard var baseComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
-        guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
 
-        baseComponents.path = pathComponents.path
-        baseComponents.query = pathComponents.query
+        if let path = path, let pathURL = URL(string: path) {
+            guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
+
+            baseComponents.path = pathComponents.path
+            baseComponents.query = pathComponents.query
+        }
 
         guard let url = baseComponents.url else { throw TeapotError.invalidRequestPath }
 
