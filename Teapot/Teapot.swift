@@ -151,9 +151,9 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkImageResult once the request completes.
-    func downloadImage(headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkImageResult) -> Void)) {
+    func downloadImage(path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkImageResult) -> Void)) {
         do {
-            let request = try self.request(verb: .get, path: nil, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
+            let request = try self.request(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
             self.runTask(with: request) { (result: NetworkImageResult) in
                 switch result {

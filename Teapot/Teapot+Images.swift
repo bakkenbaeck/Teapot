@@ -1,7 +1,7 @@
 import Foundation
 
 extension Teapot {
-    open func get(headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkImageResult) -> Void)) {
+    open func get(_ path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkImageResult) -> Void)) {
         var headerFields = headerFields ?? [String: String]()
 
         // defaults to PNG
@@ -13,6 +13,6 @@ extension Teapot {
             headerFields["Content-Type"] = "image/png"
         }
 
-        self.downloadImage(headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+        self.downloadImage(path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 }
