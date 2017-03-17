@@ -1,11 +1,3 @@
-//
-//  TeapotTests.swift
-//  TeapotTests
-//
-//  Created by Igor Ranieri on 26/01/2017.
-//  Copyright © 2017 B&B. All rights reserved.
-//
-
 import XCTest
 @testable import TeapotMac
 
@@ -14,7 +6,7 @@ class TeapotTests: XCTestCase {
     var teapot: Teapot?
 
     // WARNING: Replace this path with a newly created requestb.in address, since they're temporary.
-    var path = "/y8vhbpy8"
+    var path = "/v5vt47v5"
     
     override func setUp() {
         super.setUp()

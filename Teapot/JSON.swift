@@ -50,4 +50,15 @@ public enum JSON {
     public init(_ array: [[String: Any]]) {
         self = .array(array)
     }
+
+    public init?(_ data: Data) {
+        let json = try? JSONSerialization.jsonObject(with: data, options: [])
+        if let array = json as? Array<Dictionary<String, Any>> {
+            self = .array(array)
+        } else if let dict = json as? Dictionary<String, Any> {
+            self = .dictionary(dict)
+        } else {
+            return nil
+        }
+    }
 }
