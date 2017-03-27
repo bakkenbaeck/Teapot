@@ -17,11 +17,11 @@ import Foundation
 /// - success: Contains an optional JSON and an HTTPURLResponse. The parsing layer should know ahead of time if JSON is dictionary or array.
 /// - failure: Contains an optional JSON, an HTTPURLResponse and an Error. The parsing layer should know ahead of time if JSON is dictionary or array.
 public enum NetworkResult {
-    case success(JSON?, HTTPURLResponse)
+    case success(RequestParameter?, HTTPURLResponse)
 
-    case failure(JSON?, HTTPURLResponse, Error)
+    case failure(RequestParameter?, HTTPURLResponse, Error)
 
-    public init(_ json: JSON?, _ response: HTTPURLResponse, _ error: Error? = nil) {
+    public init(_ json: RequestParameter?, _ response: HTTPURLResponse, _ error: Error? = nil) {
         if let error = error {
             self = .failure(json, response, error)
         } else {

@@ -1,14 +1,17 @@
 import Foundation
 
 
-/// JSON enum, to encapsulate JSON objects being either dictionaries or arrays.
+/// RequestParameter enum, to encapsulate JSON object (either dictionaries or arrays) and simple multipart data.
 ///
 /// - dictionary: [String: Any] dictionary or nil if array or invalid data.
 /// - array: [[String: Any]] array or nil if dictionary or invalid data.
-public enum JSON {
+/// - data: Data data from the array, dictionary or multipart form data.
+public enum RequestParameter {
     case dictionary(Dictionary<String, Any>)
 
     case array(Array<Dictionary<String, Any>>)
+
+    case data(Data)
 
     public var dictionary: (Dictionary<String, Any>)? {
         get {
@@ -35,6 +38,8 @@ public enum JSON {
     public var data: Data? {
         get {
             switch self {
+            case .data(let data):
+                return data
             case .array(let array):
                 return try? JSONSerialization.data(withJSONObject: array, options: [])
             case .dictionary(let dictionary):
@@ -51,14 +56,14 @@ public enum JSON {
         self = .array(array)
     }
 
-    public init?(_ data: Data) {
+    public init(_ data: Data) {
         let json = try? JSONSerialization.jsonObject(with: data, options: [])
         if let array = json as? Array<Dictionary<String, Any>> {
             self = .array(array)
         } else if let dict = json as? Dictionary<String, Any> {
             self = .dictionary(dict)
         } else {
-            return nil
+            self = .data(data)
         }
     }
 }
