@@ -6,7 +6,7 @@ class TeapotTests: XCTestCase {
     var teapot: Teapot?
 
     // WARNING: Replace this path with a newly created requestb.in address, since they're temporary.
-    var path = "/v5vt47v5"
+    var path = "/1ldzidr1"
     
     override func setUp() {
         super.setUp()
@@ -116,7 +116,7 @@ class TeapotTests: XCTestCase {
         self.teapot = Teapot(baseURL: URL(string: "http://requestb.in")!)
 
         let dict: [String: Any] = ["key": "value", "keyInt": 2]
-        let json = JSON(dict)
+        let json = RequestParameter(dict)
         let headers = ["HTTP-Test-value": "This string here"]
 
         self.teapot?.post(self.path, parameters: json, headerFields: headers) { (result) in
