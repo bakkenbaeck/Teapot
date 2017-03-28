@@ -1,14 +1,14 @@
 import UIKit
 
 extension Teapot {
-    open func multipartData(from image: UIImage, boundary: String, fileName: String = "") -> Data {
+    open func multipartData(from image: UIImage, boundary: String, filename: String) -> Data {
         var resultData = Data()
 
         // Boundary should start with --
         let startingLine = "--" + boundary + "\r\n"
         resultData.append(startingLine.data(using: .utf8)!)
 
-        let disposition = "Content-Disposition: form-data; name=\"image\"; filename=\"" + fileName + "\"\r\n"
+        let disposition = "Content-Disposition: form-data; name=\"image\"; filename=\"" + filename + "\"\r\n"
         resultData.append(disposition.data(using: .utf8)!)
 
         // actual image data

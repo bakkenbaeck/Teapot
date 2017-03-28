@@ -205,14 +205,22 @@ open class Teapot {
         request.allowsCellularAccess = allowsCellular
         request.httpMethod = verb.rawValue
 
+        var hasContentType = false
+
         if let headerFields = headerFields {
             for headerField in headerFields {
+                if headerField.key == "Content-Type" {
+                    hasContentType = true
+                }
                 request.setValue(headerField.value, forHTTPHeaderField: headerField.key)
             }
         }
 
         if let parameters = parameters {
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            if (parameters.dictionary != nil || parameters.array != nil) && !hasContentType {
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            }
+
             request.httpBody = parameters.data
         }
 
