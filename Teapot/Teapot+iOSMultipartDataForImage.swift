@@ -1,6 +1,13 @@
 import UIKit
 
 extension Teapot {
+    /// Create multipart form data from UIImage
+    ///
+    /// - Parameters:
+    ///   - image: image Image to be uploaded.
+    ///   - boundary: boundary String boundary to split arguments. Should be the same value set in the Content-Type header.
+    ///   - filename: filename A filename. Preferrably with matching UTI.
+    /// - Returns: return data The properly encoded data. Create a RequestParameter with it to have it set as the request body.
     open func multipartData(from image: UIImage, boundary: String, filename: String) -> Data {
         var resultData = Data()
 
