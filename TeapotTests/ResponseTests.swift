@@ -1,11 +1,11 @@
 import XCTest
 @testable import TeapotMac
 
-class JSONTests: XCTestCase {
+class ResponseTests: XCTestCase {
     func testFromArray() {
         let ary: [[String: Any]] = [["test" : 1]]
         let data = try! JSONSerialization.data(withJSONObject: ary, options: [])
-        let json = JSON(ary)
+        let json = RequestParameter(ary)
 
         XCTAssertNotNil(json.array)
         XCTAssertNotNil(json.data)
@@ -16,7 +16,7 @@ class JSONTests: XCTestCase {
     func testFromDict() {
         let dict: [String: Any] = ["test" : 1]
         let data = try! JSONSerialization.data(withJSONObject: dict, options: [])
-        let json = JSON(dict)
+        let json = RequestParameter(dict)
 
         XCTAssertNil(json.array)
         XCTAssertNotNil(json.data)
@@ -26,7 +26,7 @@ class JSONTests: XCTestCase {
 
     func testDictFromData() {
         let data = "{\"employees\":{\"employee\":[{\"id\":\"1\",\"firstName\":\"Tom\",\"lastName\":\"Cruise\"}]}}".data(using: .utf8)!
-        let json = JSON(data)!
+        let json = RequestParameter(data)
 
         XCTAssertNil(json.array)
         XCTAssertNotNil(json.data)
@@ -36,7 +36,7 @@ class JSONTests: XCTestCase {
 
     func testArrayFromData() {
         let data = "[{\"id\":\"1\",\"firstName\":\"Tom\",\"lastName\":\"Cruise\"}]".data(using: .utf8)!
-        let json = JSON(data)!
+        let json = RequestParameter(data)
 
         XCTAssertNil(json.dictionary)
         XCTAssertNotNil(json.data)

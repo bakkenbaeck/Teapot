@@ -67,7 +67,7 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func post(_ path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+    open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
 
         self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
@@ -81,7 +81,7 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func put(_ path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+    open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
         self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
@@ -94,7 +94,7 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func delete(_ path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+    open func delete(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
 
         self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
@@ -116,7 +116,7 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    func execute(verb: Verb, path: String, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
+    func execute(verb: Verb, path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping((NetworkResult) -> Void)) {
         do {
             let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
@@ -189,7 +189,7 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     /// - Returns: URLRequest
-    func request(verb: Verb, path: String? = nil, parameters: JSON? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
+    func request(verb: Verb, path: String? = nil, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
         guard var baseComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
 
         if let path = path, let pathURL = URL(string: path) {
@@ -205,14 +205,22 @@ open class Teapot {
         request.allowsCellularAccess = allowsCellular
         request.httpMethod = verb.rawValue
 
+        var hasContentType = false
+
         if let headerFields = headerFields {
             for headerField in headerFields {
+                if headerField.key == "Content-Type" {
+                    hasContentType = true
+                }
                 request.setValue(headerField.value, forHTTPHeaderField: headerField.key)
             }
         }
 
         if let parameters = parameters {
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            if (parameters.dictionary != nil || parameters.array != nil) && !hasContentType {
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            }
+
             request.httpBody = parameters.data
         }
 
@@ -223,12 +231,12 @@ open class Teapot {
         let task = self.session.dataTask(with: request) { (data, response, error) in
             guard let response = response else { return }
 
-            var json: JSON? = nil
+            var json: RequestParameter? = nil
             if let data = data, let deserialised = try? JSONSerialization.jsonObject(with: data, options: []) {
                 if let dictionary = deserialised as? [String: Any] {
-                    json = JSON(dictionary)
+                    json = RequestParameter(dictionary)
                 } else if let array = deserialised as? [[String: Any]] {
-                    json = JSON(array)
+                    json = RequestParameter(array)
                 }
             }
 
