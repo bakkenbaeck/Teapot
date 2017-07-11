@@ -260,6 +260,28 @@ class TeapotTests: XCTestCase {
         self.waitForExpectations(timeout: 10.0)
     }
 
+    func testEscapedQuery() {
+        let expectation = self.expectation(description: "EscapedQuery")
+        self.teapot?.get("/get?query=hello%26%26world&world") { (result: NetworkResult) in
+
+            switch result {
+            case .success(let json, _):
+                print(json)
+                if let json = json?.dictionary, let queryResult = ((json["args"] as? [String: Any])?["query"]) as? String {
+                    XCTAssertEqual(queryResult, "hello&&world")
+                }
+                break
+            case .failure(let json, let response, _):
+                XCTFail()
+            }
+
+            XCTAssertNotNil(result)
+            expectation.fulfill()
+        }
+
+        self.waitForExpectations(timeout: 10.0)
+    }
+
     func testImage() {
         // http://icons.iconarchive.com 
         // /icons/martz90/circle/512/app-draw-icon.png
