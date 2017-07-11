@@ -266,7 +266,6 @@ class TeapotTests: XCTestCase {
 
             switch result {
             case .success(let json, _):
-                print(json)
                 if let json = json?.dictionary, let queryResult = ((json["args"] as? [String: Any])?["query"]) as? String {
                     XCTAssertEqual(queryResult, "hello&&world")
                 }
