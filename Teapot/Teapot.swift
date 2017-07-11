@@ -196,7 +196,7 @@ open class Teapot {
             guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
 
             baseComponents.path = pathComponents.path
-            baseComponents.query = pathComponents.query
+            baseComponents.percentEncodedQuery = pathComponents.percentEncodedQuery
         }
 
         guard let url = baseComponents.url else { throw TeapotError.invalidRequestPath }
