@@ -2,14 +2,12 @@ import XCTest
 @testable import TeapotMac
 
 class MockTests: XCTestCase {
-    let session = MockURLSession()
-    let mockedTeapot: Teapot?
+    var mockedTeapot: MockTeapot?
     
     override func setUp() {
         super.setUp()
 
-        let mockTeapot = Teapot(baseURL: URL(string: "https://some.base.url.com")!)
-        mockedTeapot = Teapot
+        mockedTeapot = MockTeapot(baseURL: URL(string: "https://some.base.url.com")!)
     }
 
     func testMock() {
@@ -18,7 +16,7 @@ class MockTests: XCTestCase {
         mockedTeapot?.get("/get") { (result: NetworkResult) in
             switch result {
             case .success(let json, let response):
-                XCTAssertEqual(json, "mocked json")
+                XCTAssertEqual(json!.dictionary!["key"] as! String, "value")
             case .failure(_, _, _):
                 XCTAssertTrue(false)
             }
