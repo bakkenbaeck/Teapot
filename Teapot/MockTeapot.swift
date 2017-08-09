@@ -1,5 +1,4 @@
 import Foundation
-@testable import TeapotMac
 
 class MockTeapot: Teapot {
 
