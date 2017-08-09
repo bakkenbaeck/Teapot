@@ -11,7 +11,7 @@ class MockTests: XCTestCase {
     }
 
     func testMock() {
-        let expectation = self.expectation(description: "Mocked get")
+        let expectation = self.expectation(description: "Mocked get.json")
 
         mockedTeapot?.get("/get") { (result: NetworkResult) in
             switch result {

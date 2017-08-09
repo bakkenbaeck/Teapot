@@ -21,10 +21,9 @@ class MockTeapot: Teapot {
     }
 
     func getMockedData(forPath path: String, completion: @escaping(([String: Any]?, Error?) -> Void)) {
-        let components = path.components(separatedBy: "/")
-        let resource = components.last
+        let resource = (path as NSString).lastPathComponent
         
-        if let filePath = Bundle.main.path(forResource: resource, ofType: "json") {
+        if let filePath = Bundle.main.path(forResource: "get", ofType: "json") {
             let url = URL(fileURLWithPath: filePath)
             do {
                 let data = try Data(contentsOf: url)

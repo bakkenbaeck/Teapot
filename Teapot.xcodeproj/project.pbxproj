@@ -24,7 +24,10 @@
 		D197B06C934A836E5ACAD940 /* MockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D197BA0495D1052C8D29FD8A /* MockTests.swift */; };
 		D197B130B579FEBF404A20F7 /* MockTeapot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D197B195CEC87D0FA798B47B /* MockTeapot.swift */; };
 		D197B176D5E1568F54764698 /* MockTeapot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D197B195CEC87D0FA798B47B /* MockTeapot.swift */; };
+		D197B607C507C5C05DC16DB2 /* get.json in Resources */ = {isa = PBXBuildFile; fileRef = D197BE8B3B3722C62BC417F9 /* get.json */; };
 		D197B7D0B944F95463C64BB6 /* MockTeapot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D197B195CEC87D0FA798B47B /* MockTeapot.swift */; };
+		D197B7FF5A48A86977C1319E /* get.json in Resources */ = {isa = PBXBuildFile; fileRef = D197BE8B3B3722C62BC417F9 /* get.json */; };
+		D197B89F55941DDFE2ECE7FD /* get.json in Resources */ = {isa = PBXBuildFile; fileRef = D197BE8B3B3722C62BC417F9 /* get.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +57,7 @@
 		9FED01001E3A4FF6009A54B4 /* Teapot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Teapot.swift; sourceTree = "<group>"; };
 		D197B195CEC87D0FA798B47B /* MockTeapot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockTeapot.swift; sourceTree = "<group>"; };
 		D197BA0495D1052C8D29FD8A /* MockTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockTests.swift; sourceTree = "<group>"; };
+		D197BE8B3B3722C62BC417F9 /* get.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = get.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,7 @@
 				9F1D8B741E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift */,
 				9FED00E11E3A4F10009A54B4 /* Resources */,
 				D197B195CEC87D0FA798B47B /* MockTeapot.swift */,
+				D197BE8B3B3722C62BC417F9 /* get.json */,
 			);
 			path = Teapot;
 			sourceTree = "<group>";
@@ -264,6 +269,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D197B89F55941DDFE2ECE7FD /* get.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F7B89741E51E098009C192E /* app-draw-icon.png in Resources */,
+				D197B607C507C5C05DC16DB2 /* get.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +286,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D197B7FF5A48A86977C1319E /* get.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
