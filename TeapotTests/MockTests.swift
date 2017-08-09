@@ -17,8 +17,9 @@ class MockTests: XCTestCase {
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(json!.dictionary!["key"] as! String, "value")
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .failure(_, _, let error):
+                print(error)
+                XCTFail()
             }
 
             expectation.fulfill()
