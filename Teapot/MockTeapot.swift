@@ -13,7 +13,7 @@ class MockTeapot: Teapot {
 
             let response = HTTPURLResponse(url: URL(string: path)!, statusCode: 200, httpVersion: nil, headerFields: nil)
             let requestParameter = json != nil ? RequestParameter(json!) : nil
-            
+
             let networkResult = NetworkResult(requestParameter, response!, error)
 
             completion(networkResult)
@@ -23,8 +23,7 @@ class MockTeapot: Teapot {
     func getMockedData(forPath path: String, completion: @escaping(([String: Any]?, Error?) -> Void)) {
         let resource = (path as NSString).lastPathComponent
         
-        if let filePath = Bundle.main.path(forResource: "get", ofType: "json") {
-            let url = URL(fileURLWithPath: filePath)
+        if let url = Bundle(for: MockTeapot.self).url(forResource: "get", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
                 if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
