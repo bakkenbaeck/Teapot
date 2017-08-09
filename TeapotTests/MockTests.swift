@@ -7,11 +7,12 @@ class MockTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        mockedTeapot = MockTeapot(baseURL: URL(string: "https://some.base.url.com")!)
+        mockedTeapot = MockTeapot(baseURL: URL(string: "https://some.base.url.com")!, bundle: Bundle(for: MockTests.self))
     }
 
     func testMock() {
         let expectation = self.expectation(description: "Mocked get.json")
+
 
         mockedTeapot?.get("/get") { (result: NetworkResult) in
             switch result {

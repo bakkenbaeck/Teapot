@@ -24,8 +24,7 @@
 		D197B06C934A836E5ACAD940 /* MockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D197BA0495D1052C8D29FD8A /* MockTests.swift */; };
 		D197B130B579FEBF404A20F7 /* MockTeapot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D197B195CEC87D0FA798B47B /* MockTeapot.swift */; };
 		D197B176D5E1568F54764698 /* MockTeapot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D197B195CEC87D0FA798B47B /* MockTeapot.swift */; };
-		E68E1FEE1F3B363D008B7377 /* get.json in Resources */ = {isa = PBXBuildFile; fileRef = D197B2E7184306386AB79566 /* get.json */; };
-		E68E1FEF1F3B363D008B7377 /* get.json in Resources */ = {isa = PBXBuildFile; fileRef = D197B2E7184306386AB79566 /* get.json */; };
+		D197B9D5F301287A537FE091 /* get.json in Resources */ = {isa = PBXBuildFile; fileRef = D197B92809E03181E7EF7AA1 /* get.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +53,7 @@
 		9FED00FF1E3A4FF6009A54B4 /* NetworkResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkResult.swift; sourceTree = "<group>"; };
 		9FED01001E3A4FF6009A54B4 /* Teapot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Teapot.swift; sourceTree = "<group>"; };
 		D197B195CEC87D0FA798B47B /* MockTeapot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockTeapot.swift; sourceTree = "<group>"; };
-		D197B2E7184306386AB79566 /* get.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = get.json; path = TeapotTests/get.json; sourceTree = SOURCE_ROOT; };
+		D197B92809E03181E7EF7AA1 /* get.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = get.json; sourceTree = "<group>"; };
 		D197BA0495D1052C8D29FD8A /* MockTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -113,7 +112,6 @@
 				9F1D8B741E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift */,
 				9FED00E11E3A4F10009A54B4 /* Resources */,
 				D197B195CEC87D0FA798B47B /* MockTeapot.swift */,
-				D197B2E7184306386AB79566 /* get.json */,
 			);
 			path = Teapot;
 			sourceTree = "<group>";
@@ -126,6 +124,7 @@
 				9FB36EA31E7BE95900DB6F86 /* ResponseTests.swift */,
 				9FED00D71E3A4EDA009A54B4 /* Info.plist */,
 				D197BA0495D1052C8D29FD8A /* MockTests.swift */,
+				D197B92809E03181E7EF7AA1 /* get.json */,
 			);
 			path = TeapotTests;
 			sourceTree = "<group>";
@@ -267,7 +266,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E68E1FEE1F3B363D008B7377 /* get.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F7B89741E51E098009C192E /* app-draw-icon.png in Resources */,
+				D197B9D5F301287A537FE091 /* get.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,7 +282,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E68E1FEF1F3B363D008B7377 /* get.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
