@@ -1,6 +1,6 @@
 import Foundation
 
-class MockTeapot: Teapot {
+open class MockTeapot: Teapot {
 
     open var currentBundle: Bundle
 
