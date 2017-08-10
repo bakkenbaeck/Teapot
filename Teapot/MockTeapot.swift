@@ -5,8 +5,8 @@ open class MockTeapot: Teapot {
     open var currentBundle: Bundle
 
     public enum MockError: Error {
-        case missingMockFile
-        case invalidMockFile
+        case missingMockFile(String)
+        case invalidMockFile(String)
     }
 
     public init(baseURL: URL, bundle: Bundle) {
@@ -35,13 +35,13 @@ open class MockTeapot: Teapot {
                 if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     completion(json, nil)
                 } else {
-                    completion(nil, MockError.invalidMockFile)
+                    completion(nil, MockError.invalidMockFile(url.absoluteString))
                 }
             } catch let error {
-                completion(nil, MockError.invalidMockFile)
+                completion(nil, MockError.invalidMockFile(url.absoluteString))
             }
         } else {
-            completion(nil, MockError.missingMockFile)
+            completion(nil, MockError.missingMockFile("\(resource).json"))
         }
     }
 }
