@@ -3,7 +3,7 @@ import XCTest
 
 class MockTests: XCTestCase {
     var mockedTeapot: MockTeapot?
-    
+
     override func setUp() {
         super.setUp()
 
@@ -17,8 +17,7 @@ class MockTests: XCTestCase {
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(json!.dictionary!["key"] as! String, "value")
-            case .failure(_, _, let error):
-                print(error)
+            case .failure:
                 XCTFail()
             }
 
@@ -33,11 +32,11 @@ class MockTests: XCTestCase {
 
         mockedTeapot?.get("/missing") { (result: NetworkResult) in
             switch result {
-            case .success(let json, let response):
+            case .success:
                 XCTFail()
             case .failure(_, _, let error):
                 switch error {
-                    case MockError.missingMockFile(let fileName):
+                    case MockTeapot.MockError.missingMockFile(let fileName):
                         XCTAssertEqual(fileName, "missing.json")
                     default:
                         XCTFail()
