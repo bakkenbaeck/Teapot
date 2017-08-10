@@ -11,8 +11,6 @@ class MockTests: XCTestCase {
     }
 
     func testMock() {
-        let expectation = self.expectation(description: "Mocked get.json")
-
         mockedTeapot?.get("/get") { (result: NetworkResult) in
             switch result {
             case .success(let json, let response):
@@ -20,16 +18,10 @@ class MockTests: XCTestCase {
             case .failure:
                 XCTFail()
             }
-
-            expectation.fulfill()
         }
-
-        self.waitForExpectations(timeout: 10.0)
     }
 
     func testMissingMock() {
-        let expectation = self.expectation(description: "Test missing mockfile error")
-
         mockedTeapot?.get("/missing") { (result: NetworkResult) in
             switch result {
             case .success:
@@ -42,10 +34,6 @@ class MockTests: XCTestCase {
                         XCTFail()
                 }
             }
-
-            expectation.fulfill()
         }
-
-        self.waitForExpectations(timeout: 10.0)
     }
 }
