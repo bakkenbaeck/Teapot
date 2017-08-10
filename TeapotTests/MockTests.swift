@@ -36,4 +36,20 @@ class MockTests: XCTestCase {
             }
         }
     }
+
+    func testInvalidMock() {
+        mockedTeapot?.get("/invalid") { (result: NetworkResult) in
+            switch result {
+            case .success:
+                XCTFail()
+            case .failure(_, _, let error):
+                switch error {
+                case MockTeapot.MockError.invalidMockFile(let fileName):
+                    XCTAssertEqual(fileName, "invalid.json")
+                default:
+                    XCTFail()
+                }
+            }
+        }
+    }
 }
