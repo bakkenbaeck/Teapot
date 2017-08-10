@@ -9,7 +9,7 @@ open class MockTeapot: Teapot {
         case invalidMockFile
     }
 
-    init(baseURL: URL, bundle: Bundle) {
+    public init(baseURL: URL, bundle: Bundle) {
         currentBundle = bundle
 
         super.init(baseURL: baseURL)
