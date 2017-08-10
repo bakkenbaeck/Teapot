@@ -35,10 +35,10 @@ open class MockTeapot: Teapot {
                 if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     completion(json, nil)
                 } else {
-                    completion(nil, MockError.invalidMockFile(url.absoluteString))
+                    completion(nil, MockError.invalidMockFile("\(resource).json"))
                 }
             } catch let error {
-                completion(nil, MockError.invalidMockFile(url.absoluteString))
+                completion(nil, MockError.invalidMockFile("\(resource).json"))
             }
         } else {
             completion(nil, MockError.missingMockFile("\(resource).json"))
