@@ -38,7 +38,7 @@ open class MockTeapot: Teapot {
                     completion(nil, MockError.invalidMockFile("\(resource).json"))
                 }
             } catch let error {
-                completion(nil, MockError.invalidMockFile("\(resource).json"))
+                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) in \(resource).json"))
             }
         } else {
             completion(nil, MockError.missingMockFile("\(resource).json"))
