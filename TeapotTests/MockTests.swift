@@ -45,7 +45,7 @@ class MockTests: XCTestCase {
             case .failure(_, _, let error):
                 switch error {
                 case MockTeapot.MockError.invalidMockFile(let fileName):
-                    XCTAssertEqual(fileName, "invalid.json")
+                    XCTAssertEqual(fileName, "error: The data couldn’t be read because it isn’t in the correct format. in invalid.json")
                 default:
                     XCTFail()
                 }
