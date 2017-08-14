@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// RequestParameter enum, to encapsulate JSON object (either dictionaries or arrays) and simple multipart data.
 ///
 /// - dictionary: [String: Any] dictionary or nil if array or invalid data.
@@ -14,37 +13,31 @@ public enum RequestParameter {
     case data(Data)
 
     public var dictionary: (Dictionary<String, Any>)? {
-        get {
-            switch self {
-            case .dictionary(let d):
-                return d
-            default:
-                return nil
-            }
+        switch self {
+        case .dictionary(let d):
+            return d
+        default:
+            return nil
         }
     }
 
     public var array: (Array<Dictionary<String, Any>>)? {
-        get {
-            switch self {
-            case .array(let a):
-                return a
-            default:
-                return nil
-            }
+        switch self {
+        case .array(let a):
+            return a
+        default:
+            return nil
         }
     }
 
     public var data: Data? {
-        get {
-            switch self {
-            case .data(let data):
-                return data
-            case .array(let array):
-                return try? JSONSerialization.data(withJSONObject: array, options: [])
-            case .dictionary(let dictionary):
-                return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
-            }
+        switch self {
+        case .data(let data):
+            return data
+        case .array(let array):
+            return try? JSONSerialization.data(withJSONObject: array, options: [])
+        case .dictionary(let dictionary):
+            return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
         }
     }
 

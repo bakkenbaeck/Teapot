@@ -7,11 +7,11 @@ class MockTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        mockedTeapot = MockTeapot(baseURL: URL(string: "https://some.base.url.com")!, bundle: Bundle(for: MockTests.self))
+        self.mockedTeapot = MockTeapot(baseURL: URL(string: "https://some.base.url.com")!, bundle: Bundle(for: MockTests.self))
     }
 
     func testMock() {
-        mockedTeapot?.get("/get") { (result: NetworkResult) in
+        self.mockedTeapot?.get("/get") { (result: NetworkResult) in
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(json!.dictionary!["key"] as! String, "value")
@@ -22,7 +22,7 @@ class MockTests: XCTestCase {
     }
 
     func testMissingMock() {
-        mockedTeapot?.get("/missing") { (result: NetworkResult) in
+        self.mockedTeapot?.get("/missing") { (result: NetworkResult) in
             switch result {
             case .success:
                 XCTFail()
@@ -38,7 +38,7 @@ class MockTests: XCTestCase {
     }
 
     func testInvalidMock() {
-        mockedTeapot?.get("/invalid") { (result: NetworkResult) in
+        self.mockedTeapot?.get("/invalid") { (result: NetworkResult) in
             switch result {
             case .success:
                 XCTFail()
