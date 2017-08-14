@@ -1,5 +1,6 @@
 import Foundation
 
+/// A subclass of Teapot to be used for mocking
 open class MockTeapot: Teapot {
 
     open var currentBundle: Bundle
@@ -8,7 +9,12 @@ open class MockTeapot: Teapot {
         case missingMockFile(String)
         case invalidMockFile(String)
     }
-
+    
+    /// Initialiser.
+    ///
+    /// - Parameters:
+    ///   - baseURL: baseURL for the call, used to call the super init.
+    ///   - bundle: the bundle of your test target. When you add a json file with the name of the endpoint to your test target it will return this data.
     public init(baseURL: URL, bundle: Bundle) {
         self.currentBundle = bundle
 
