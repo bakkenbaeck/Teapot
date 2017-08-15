@@ -13,12 +13,11 @@ open class MockTeapot: Teapot {
     /// Initialiser.
     ///
     /// - Parameters:
-    ///   - baseURL: baseURL for the call, used to call the super init.
     ///   - bundle: the bundle of your test target. When you add a json file with the name of the endpoint to your test target it will return this data.
-    public init(baseURL: URL, bundle: Bundle) {
+    public init(bundle: Bundle) {
         self.currentBundle = bundle
 
-        super.init(baseURL: baseURL)
+        super.init(baseURL: URL(string: "https://mock.base.url.com")!)
     }
 
     override func execute(verb _: Verb, path: String, parameters _: RequestParameter? = nil, headerFields _: [String: String]? = nil, timeoutInterval _: TimeInterval = 5.0, allowsCellular _: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
@@ -44,7 +43,7 @@ open class MockTeapot: Teapot {
                     completion(nil, MockError.invalidMockFile("\(resource).json"))
                 }
             } catch let error {
-                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) in \(resource).json"))
+                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) In file: '\(resource).json'"))
             }
         } else {
             completion(nil, MockError.missingMockFile("\(resource).json"))

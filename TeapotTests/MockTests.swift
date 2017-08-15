@@ -7,7 +7,7 @@ class MockTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        self.mockedTeapot = MockTeapot(baseURL: URL(string: "https://some.base.url.com")!, bundle: Bundle(for: MockTests.self))
+        self.mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
     }
 
     func testMock() {
@@ -45,7 +45,7 @@ class MockTests: XCTestCase {
             case .failure(_, _, let error):
                 switch error {
                 case MockTeapot.MockError.invalidMockFile(let fileName):
-                    XCTAssertEqual(fileName, "error: The data couldn’t be read because it isn’t in the correct format. in invalid.json")
+                    XCTAssertEqual(fileName, "error: The data couldn’t be read because it isn’t in the correct format. In file: 'invalid.json'")
                 default:
                     XCTFail()
                 }
