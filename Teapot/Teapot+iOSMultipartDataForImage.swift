@@ -34,10 +34,10 @@ extension Teapot {
         let dataSeparator = "\r\n"
         resultData.append(dataSeparator.data(using: .utf8)!)
 
-        //Notice -- at the start and at the end
+        // Notice -- at the start and at the end
         let endingLine = "--" + boundary + "--\r\n"
         resultData.append(endingLine.data(using: .utf8)!)
-        
+
         return resultData
     }
 
@@ -66,10 +66,10 @@ extension Teapot {
         let dataSeparator = "\r\n"
         resultData.append(dataSeparator.data(using: .utf8)!)
 
-        //Notice -- at the start and at the end
+        // Notice -- at the start and at the end
         let endingLine = "--" + boundary + "--\r\n"
         resultData.append(endingLine.data(using: .utf8)!)
-        
+
         return resultData
     }
 }

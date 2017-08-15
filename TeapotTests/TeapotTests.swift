@@ -6,7 +6,7 @@ class TeapotTests: XCTestCase {
     var teapot: Teapot?
 
     // WARNING: Replace this path with a newly created requestb.in address, since they're temporary.
-    var path = "/shbpirsh"
+    var path = "/12r9zk71"
     
     override func setUp() {
         super.setUp()
@@ -108,7 +108,7 @@ class TeapotTests: XCTestCase {
     /// To proper visualise this test, open http://requestb.in + self.path and ensure that the form data is there correctly
     /// and that the HTTP header field is also there.
     /// This test passing is no guaratee that it did. 
-    // TODO: find a way to make this fail if the server doesn't get the data.
+    // TODO: find a way to make this fail if the server doesn't get.json the data.
     func testWithParamsAndHeaders() {
         let expectation = self.expectation(description: "Post with parameters and headers")
         var finishCounter = 0
@@ -124,7 +124,7 @@ class TeapotTests: XCTestCase {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertNil(json)
-            case .failure(_, _, _):
+            case let .failure(parameters, response, error):
                 XCTFail()
             }
 

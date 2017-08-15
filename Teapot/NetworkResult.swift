@@ -8,7 +8,6 @@ import Foundation
     public typealias Image = NSImage
 #endif
 
-
 /// NetworkResult
 ///
 /// This is passed by the Network layer completion blocks. The client implementation should know ahead of time if JSON is dictionary or array.
@@ -45,4 +44,3 @@ public enum NetworkImageResult {
         }
     }
 }
-
