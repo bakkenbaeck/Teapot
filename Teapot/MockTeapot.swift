@@ -5,11 +5,24 @@ open class MockTeapot: Teapot {
 
     open var currentBundle: Bundle
 
+    public enum StatusCode: Int {
+        case ok = 200
+        case created = 201
+        case unauthorized = 401
+        case forbidden = 403
+        case notFound = 404
+        case internalServerError = 500
+        case serviceUnavailable = 503
+    }
+
     public enum MockError: Error {
         case missingMockFile(String)
         case invalidMockFile(String)
     }
-    
+
+    /// The status code the URL request should return
+    open var statusCode: StatusCode = .ok
+
     /// Initialiser.
     ///
     /// - Parameters:
