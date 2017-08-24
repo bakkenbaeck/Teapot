@@ -6,7 +6,7 @@ class TeapotTests: XCTestCase {
     var teapot: Teapot?
 
     // WARNING: Replace this path with a newly created requestb.in address, since they're temporary.
-    var path = "/12r9zk71"
+    var path = "/roqu1cro"
     
     override func setUp() {
         super.setUp()
@@ -121,10 +121,10 @@ class TeapotTests: XCTestCase {
 
         self.teapot?.post(self.path, parameters: json, headerFields: headers) { (result) in
             switch result {
-            case .success(let json, let response):
+            case let .success(json, response):
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertNil(json)
-            case let .failure(parameters, response, error):
+            case let .failure(requestParams, response, error):
                 XCTFail()
             }
 
