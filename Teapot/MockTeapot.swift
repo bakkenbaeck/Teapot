@@ -3,8 +3,9 @@ import Foundation
 /// A subclass of Teapot to be used for mocking
 open class MockTeapot: Teapot {
 
-    open var currentBundle: Bundle
+    private var currentBundle: Bundle
 
+    /// The status codes in words to be set as status code
     public enum StatusCode: Int {
         case ok = 200
         case created = 201
@@ -15,6 +16,7 @@ open class MockTeapot: Teapot {
         case serviceUnavailable = 503
     }
 
+    /// Errors specific to parsing the specified mock file
     public enum MockError: Error {
         case missingMockFile(String)
         case invalidMockFile(String)
