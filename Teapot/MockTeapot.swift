@@ -37,10 +37,14 @@ open class MockTeapot: Teapot {
 
     override func execute(verb _: Verb, path: String, parameters _: RequestParameter? = nil, headerFields _: [String: String]? = nil, timeoutInterval _: TimeInterval = 5.0, allowsCellular _: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
         self.getMockedData(forPath: path) { json, error in
-            let response = HTTPURLResponse(url: URL(string: path)!, statusCode: 200, httpVersion: nil, headerFields: nil)
+            var mockedError = error
+            let response = HTTPURLResponse(url: URL(string: path)!, statusCode: self.statusCode.rawValue, httpVersion: nil, headerFields: nil)
             let requestParameter = json != nil ? RequestParameter(json!) : nil
 
-            let networkResult = NetworkResult(requestParameter, response!, error)
+            if self.statusCode != .ok {
+                mockedError = TeapotError.invalidResponseStatus
+            }
+            let networkResult = NetworkResult(requestParameter, response!, mockedError)
 
             completion(networkResult)
         }

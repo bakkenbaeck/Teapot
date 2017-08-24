@@ -53,14 +53,14 @@ class MockTests: XCTestCase {
         }
     }
 
-    func testErrorMock() {
+    func testUnauthorizedError() {
         self.mockedTeapot?.statusCode = .unauthorized
-        self.mockedTeapot?.get("/unauthorized_error") { (result: NetworkResult) in
+        self.mockedTeapot?.get("/get") { (result: NetworkResult) in
             switch result {
             case .success:
                 XCTFail()
-            case .failure(_, let response, let error):
-                XCTAssertEqual(response.statusCode, 400)
+            case .failure(_, let response, _):
+                XCTAssertEqual(response.statusCode, 401)
             }
         }
     }
