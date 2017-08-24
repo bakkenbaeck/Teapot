@@ -23,14 +23,15 @@ open class MockTeapot: Teapot {
     }
 
     /// The status code the URL request should return
-    open var statusCode: StatusCode = .ok
+    private let statusCode: StatusCode
 
     /// Initialiser.
     ///
     /// - Parameters:
     ///   - bundle: the bundle of your test target. When you add a json file with the name of the endpoint to your test target it will return this data.
-    public init(bundle: Bundle) {
+    public init(bundle: Bundle, statusCode: StatusCode = .ok) {
         self.currentBundle = bundle
+        self.statusCode = statusCode
 
         super.init(baseURL: URL(string: "https://mock.base.url.com")!)
     }

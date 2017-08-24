@@ -2,17 +2,11 @@ import XCTest
 @testable import TeapotMac
 
 class MockTests: XCTestCase {
-    var mockedTeapot: MockTeapot?
-
-    override func setUp() {
-        super.setUp()
-
-        self.mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
-    }
 
     func testMock() {
-        self.mockedTeapot?.get("/get") { (result: NetworkResult) in
-            switch result {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
+        mockedTeapot.get("/get") { (result: NetworkResult) in
+            switch result {            
             case .success(let json, let response):
                 XCTAssertEqual(json!.dictionary!["key"] as! String, "value")
             case .failure:
@@ -22,7 +16,8 @@ class MockTests: XCTestCase {
     }
 
     func testMissingMock() {
-        self.mockedTeapot?.get("/missing") { (result: NetworkResult) in
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
+        mockedTeapot.get("/missing") { (result: NetworkResult) in
             switch result {
             case .success:
                 XCTFail()
@@ -38,7 +33,8 @@ class MockTests: XCTestCase {
     }
 
     func testInvalidMock() {
-        self.mockedTeapot?.get("/invalid") { (result: NetworkResult) in
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
+        mockedTeapot.get("/invalid") { (result: NetworkResult) in
             switch result {
             case .success:
                 XCTFail()
@@ -54,8 +50,8 @@ class MockTests: XCTestCase {
     }
 
     func testUnauthorizedError() {
-        self.mockedTeapot?.statusCode = .unauthorized
-        self.mockedTeapot?.get("/get") { (result: NetworkResult) in
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), statusCode: .unauthorized)
+        mockedTeapot.get("/get") { (result: NetworkResult) in
             switch result {
             case .success:
                 XCTFail()
