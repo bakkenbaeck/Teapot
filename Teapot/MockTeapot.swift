@@ -29,6 +29,7 @@ open class MockTeapot: Teapot {
     ///
     /// - Parameters:
     ///   - bundle: the bundle of your test target. When you add a json file with the name of the endpoint to your test target it will return this data.
+    ///   - statusCode: the status code for the response to return errors. Default is 200 "ok" 👌
     public init(bundle: Bundle, statusCode: StatusCode = .ok) {
         self.currentBundle = bundle
         self.statusCode = statusCode
