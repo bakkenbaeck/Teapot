@@ -49,6 +49,18 @@ class MockTests: XCTestCase {
         }
     }
 
+    func testNoContent() {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), statusCode: .noContent)
+        mockedTeapot.get("/get") { (result: NetworkResult) in
+            switch result {
+            case .success(_, let response):
+                XCTAssertEqual(response.statusCode, 204)
+            case .failure:
+                XCTFail()
+            }
+        }
+    }
+
     func testUnauthorizedError() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), statusCode: .unauthorized)
         mockedTeapot.get("/get") { (result: NetworkResult) in

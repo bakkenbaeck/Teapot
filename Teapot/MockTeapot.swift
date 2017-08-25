@@ -8,6 +8,7 @@ open class MockTeapot: Teapot {
     /// The status codes in words to be set as status code
     public enum StatusCode: Int {
         case ok = 200
+        case noContent = 204
         case created = 201
         case unauthorized = 401
         case forbidden = 403
@@ -43,9 +44,10 @@ open class MockTeapot: Teapot {
             let response = HTTPURLResponse(url: URL(string: path)!, statusCode: self.statusCode.rawValue, httpVersion: nil, headerFields: nil)
             let requestParameter = json != nil ? RequestParameter(json!) : nil
 
-            if self.statusCode != .ok {
+            if self.statusCode.rawValue >= 300 {
                 mockedError = TeapotError.invalidResponseStatus
             }
+
             let networkResult = NetworkResult(requestParameter, response!, mockedError)
 
             completion(networkResult)
