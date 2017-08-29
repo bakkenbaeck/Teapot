@@ -4,8 +4,7 @@ import XCTest
 class MockTests: XCTestCase {
 
     func testMock() {
-        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
-        mockedTeapot.mockFileName = "get"
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFileName: "get")
 
         mockedTeapot.get("/get") { (result: NetworkResult) in
             switch result {            
@@ -18,8 +17,7 @@ class MockTests: XCTestCase {
     }
 
     func testMissingMock() {
-        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
-        mockedTeapot.mockFileName = "missing"
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFileName: "missing")
 
         mockedTeapot.get("/missing") { (result: NetworkResult) in
             switch result {
@@ -37,8 +35,7 @@ class MockTests: XCTestCase {
     }
 
     func testInvalidMock() {
-        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
-        mockedTeapot.mockFileName = "invalid"
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFileName: "invalid")
 
         mockedTeapot.get("/invalid") { (result: NetworkResult) in
             switch result {
@@ -56,7 +53,7 @@ class MockTests: XCTestCase {
     }
 
     func testNoContent() {
-        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), statusCode: .noContent)
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFileName: "get", statusCode: .noContent)
         mockedTeapot.get("/get") { (result: NetworkResult) in
             switch result {
             case .success(_, let response):
@@ -68,8 +65,7 @@ class MockTests: XCTestCase {
     }
 
     func testUnauthorizedError() {
-        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), statusCode: .unauthorized)
-        mockedTeapot.mockFileName = "get"
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFileName: "get", statusCode: .unauthorized)
         
         mockedTeapot.get("/get") { (result: NetworkResult) in
             switch result {

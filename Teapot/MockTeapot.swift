@@ -2,11 +2,6 @@ import Foundation
 
 /// A subclass of Teapot to be used for mocking
 open class MockTeapot: Teapot {
-    // The name of your mock file
-    open var mockFileName: String?
-
-    private var currentBundle: Bundle
-
     /// The status codes in words to be set as status code
     public enum StatusCode: Int {
         case ok = 200
@@ -21,21 +16,23 @@ open class MockTeapot: Teapot {
 
     /// Errors specific to parsing the specified mock file
     public enum MockError: Error {
-        case missingMockFileName(String)
         case missingMockFile(String)
         case invalidMockFile(String)
     }
 
-    /// The status code the URL request should return
+    private let currentBundle: Bundle
+    private let mockFileName: String
     private let statusCode: StatusCode
 
     /// Initialiser.
     ///
     /// - Parameters:
-    ///   - bundle: the bundle of your test target. When you add a json file with the name of the endpoint to your test target it will return this data.
+    ///   - bundle: the bundle of your test target, where it will search for the mock file
+    ///   - mockFileName: the name of the mock file containing the json that will be returned
     ///   - statusCode: the status code for the response to return errors. Default is 200 "ok" 👌
-    public init(bundle: Bundle, statusCode: StatusCode = .ok) {
+    public init(bundle: Bundle, mockFileName: String, statusCode: StatusCode = .ok) {
         self.currentBundle = bundle
+        self.mockFileName = mockFileName
         self.statusCode = statusCode
 
         super.init(baseURL: URL(string: "https://mock.base.url.com")!)
@@ -58,24 +55,19 @@ open class MockTeapot: Teapot {
     }
 
     func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, Error?) -> Void)) {
-        guard let resource = mockFileName else {
-            completion(nil, MockError.missingMockFileName("please specify the filename of your mock file"))
-            return 
-        }
-
-        if let url = currentBundle.url(forResource: resource, withExtension: "json") {
+        if let url = currentBundle.url(forResource: mockFileName, withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
                 if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     completion(json, nil)
                 } else {
-                    completion(nil, MockError.invalidMockFile("\(resource).json"))
+                    completion(nil, MockError.invalidMockFile("\(mockFileName).json"))
                 }
             } catch let error {
-                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) In file: '\(resource).json'"))
+                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) In file: '\(mockFileName).json'"))
             }
         } else {
-            completion(nil, MockError.missingMockFile("\(resource).json"))
+            completion(nil, MockError.missingMockFile("\(mockFileName).json"))
         }
     }
 }
