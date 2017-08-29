@@ -243,10 +243,9 @@ open class Teapot {
                 }
             }
 
-            DispatchQueue.main.async {
-                let result = NetworkResult(json, response as! HTTPURLResponse, error)
-                completion(result)
-            }
+
+            let result = NetworkResult(json, response as! HTTPURLResponse, error)
+            completion(result)
         }
 
         task.resume()
@@ -266,10 +265,8 @@ open class Teapot {
                     image = Image(data: data)
                 }
 
-                DispatchQueue.main.async {
-                    let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
-                    completion(result)
-                }
+                let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
+                completion(result)
             }
             
             task.resume()
