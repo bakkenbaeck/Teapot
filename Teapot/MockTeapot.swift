@@ -21,8 +21,10 @@ open class MockTeapot: Teapot {
     }
 
     private let currentBundle: Bundle
-    private let mockFileName: String
+    private let resource: String
     private let statusCode: StatusCode
+
+    private var overrideEndpointDictionary = [String: String]()
 
     /// Initialiser.
     ///
@@ -32,7 +34,7 @@ open class MockTeapot: Teapot {
     ///   - statusCode: the status code for the response to return errors. Default is 200 "ok" 👌
     public init(bundle: Bundle, mockFileName: String, statusCode: StatusCode = .ok) {
         self.currentBundle = bundle
-        self.mockFileName = mockFileName
+        self.resource = mockFileName
         self.statusCode = statusCode
 
         super.init(baseURL: URL(string: "https://mock.base.url.com")!)
@@ -55,19 +57,26 @@ open class MockTeapot: Teapot {
     }
 
     func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, Error?) -> Void)) {
-        if let url = currentBundle.url(forResource: mockFileName, withExtension: "json") {
+        let endPoint = (path as NSString).lastPathComponent
+        let resource = overrideEndpointDictionary[endPoint] ?? self.resource
+
+        if let url = currentBundle.url(forResource: resource, withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
                 if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     completion(json, nil)
                 } else {
-                    completion(nil, MockError.invalidMockFile("\(mockFileName).json"))
+                    completion(nil, MockError.invalidMockFile("\(resource).json"))
                 }
             } catch let error {
-                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) In file: '\(mockFileName).json'"))
+                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) In file: '\(resource).json'"))
             }
         } else {
-            completion(nil, MockError.missingMockFile("\(mockFileName).json"))
+            completion(nil, MockError.missingMockFile("\(resource).json"))
         }
+    }
+
+    func overrideEndPoint(_ endPoint: String, withFileName fileName: String) {
+        overrideEndpointDictionary[endPoint] = fileName
     }
 }

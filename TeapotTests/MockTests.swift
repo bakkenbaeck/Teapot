@@ -76,4 +76,19 @@ class MockTests: XCTestCase {
             }
         }
     }
+
+    func testEndPointOverriding() {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFileName: "get")
+        mockedTeapot.overrideEndPoint("overridden", withFileName: "overridden")
+
+        mockedTeapot.get("/overridden") { (result: NetworkResult) in
+            switch result {
+            case .success(let json, _):
+                XCTAssertEqual(json!.dictionary!["overridden"] as! String, "value")
+            case .failure(let error):
+                print(error)
+                XCTFail()
+            }
+        }
+    }
 }
