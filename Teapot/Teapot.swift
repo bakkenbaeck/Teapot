@@ -19,6 +19,10 @@ open class Teapot {
 
     // MARK: - Properties
 
+    open lazy var runTaskQueue: DispatchQueue = {
+        return DispatchQueue(label: "com.backkenbaeck.Teapot.RunTaskQueue", qos: .background)
+    }()
+
     open lazy var queue: OperationQueue = {
         let queue = OperationQueue()
         queue.name = "no.bakkenbaeck.NetworkQueue"
@@ -248,22 +252,26 @@ open class Teapot {
     }
 
     func runTask(with request: URLRequest, completion: @escaping ((NetworkImageResult) -> Void)) {
-        let task = self.session.dataTask(with: request) { data, response, error in
-            guard let response = response else {
-                NSLog(error?.localizedDescription ?? "Fatal error with request: \(request).")
+        self.runTaskQueue.async {
+            let task = self.session.dataTask(with: request) { data, response, error in
+                guard let response = response else {
+                    NSLog(error?.localizedDescription ?? "Fatal error with request: \(request).")
 
-                return
+                    return
+                }
+
+                var image: Image?
+                if let data = data {
+                    image = Image(data: data)
+                }
+
+                DispatchQueue.main.async {
+                    let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
+                    completion(result)
+                }
             }
-
-            var image: Image?
-            if let data = data {
-                image = Image(data: data)
-            }
-
-            let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
-            completion(result)
+            
+            task.resume()
         }
-
-        task.resume()
     }
 }
