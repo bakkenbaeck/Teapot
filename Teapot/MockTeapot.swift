@@ -40,6 +40,17 @@ open class MockTeapot: Teapot {
         super.init(baseURL: URL(string: "https://mock.base.url.com")!)
     }
 
+    /// overrideEndPoint.
+    /// call this method if you need a call to a certain endpoint to return a specified mock file
+    /// for example when you have a security call to the server that get's called every time you do an APICall
+    ///
+    /// - Parameters:
+    ///   - endPoint: the endpoint tht needs to get overridden
+    ///   - fileName: the name of the json file from which you want the data to be returned
+    public func overrideEndPoint(_ endPoint: String, withFileName fileName: String) {
+        overrideEndpointDictionary[endPoint] = fileName
+    }
+
     override func execute(verb _: Verb, path: String, parameters _: RequestParameter? = nil, headerFields _: [String: String]? = nil, timeoutInterval _: TimeInterval = 5.0, allowsCellular _: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
         self.getMockedData(forPath: path) { json, error in
             var mockedError = error
@@ -74,9 +85,5 @@ open class MockTeapot: Teapot {
         } else {
             completion(nil, MockError.missingMockFile("\(resource).json"))
         }
-    }
-
-    func overrideEndPoint(_ endPoint: String, withFileName fileName: String) {
-        overrideEndpointDictionary[endPoint] = fileName
     }
 }
