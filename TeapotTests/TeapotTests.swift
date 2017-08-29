@@ -105,55 +105,6 @@ class TeapotTests: XCTestCase {
         self.waitForExpectations(timeout: 10.0)
     }
 
-    /// To proper visualise this test, open http://requestb.in + self.path and ensure that the form data is there correctly
-    /// and that the HTTP header field is also there.
-    /// This test passing is no guaratee that it did. 
-    // TODO: find a way to make this fail if the server doesn't get.json the data.
-    func testWithParamsAndHeaders() {
-        let expectation = self.expectation(description: "Post with parameters and headers")
-        var finishCounter = 0
-
-        self.teapot = Teapot(baseURL: URL(string: "http://requestb.in")!)
-
-        let dict: [String: Any] = ["key": "value", "keyInt": 2]
-        let json = RequestParameter(dict)
-        let headers = ["HTTP-Test-value": "This string here"]
-
-        self.teapot?.post(self.path, parameters: json, headerFields: headers) { (result) in
-            switch result {
-            case let .success(json, response):
-                XCTAssertEqual(response.statusCode, 200)
-                XCTAssertNil(json)
-            case let .failure(requestParams, response, error):
-                XCTFail()
-            }
-
-            XCTAssertNotNil(result)
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.teapot?.put(self.path, parameters: json, headerFields: headers) { (result) in
-            switch result {
-            case .success(let json, let response):
-                XCTAssertEqual(response.statusCode, 200)
-                XCTAssertNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
-            }
-
-            XCTAssertNotNil(result)
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.waitForExpectations(timeout: 10.0)
-    }
-
     func testPut() {
         let expectation = self.expectation(description: "Put")
         var finishCounter = 0
