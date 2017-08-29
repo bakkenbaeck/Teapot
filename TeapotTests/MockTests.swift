@@ -5,6 +5,8 @@ class MockTests: XCTestCase {
 
     func testMock() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
+        mockedTeapot.mockFileName = "get"
+
         mockedTeapot.get("/get") { (result: NetworkResult) in
             switch result {            
             case .success(let json, let response):
@@ -17,6 +19,8 @@ class MockTests: XCTestCase {
 
     func testMissingMock() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
+        mockedTeapot.mockFileName = "missing"
+
         mockedTeapot.get("/missing") { (result: NetworkResult) in
             switch result {
             case .success:
@@ -34,6 +38,8 @@ class MockTests: XCTestCase {
 
     func testInvalidMock() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self))
+        mockedTeapot.mockFileName = "invalid"
+
         mockedTeapot.get("/invalid") { (result: NetworkResult) in
             switch result {
             case .success:
@@ -63,6 +69,8 @@ class MockTests: XCTestCase {
 
     func testUnauthorizedError() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), statusCode: .unauthorized)
+        mockedTeapot.mockFileName = "get"
+        
         mockedTeapot.get("/get") { (result: NetworkResult) in
             switch result {
             case .success:

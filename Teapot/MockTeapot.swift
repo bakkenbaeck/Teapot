@@ -2,6 +2,8 @@ import Foundation
 
 /// A subclass of Teapot to be used for mocking
 open class MockTeapot: Teapot {
+    // The name of your mock file
+    open var mockFileName: String?
 
     private var currentBundle: Bundle
 
@@ -19,6 +21,7 @@ open class MockTeapot: Teapot {
 
     /// Errors specific to parsing the specified mock file
     public enum MockError: Error {
+        case missingMockFileName(String)
         case missingMockFile(String)
         case invalidMockFile(String)
     }
@@ -55,7 +58,10 @@ open class MockTeapot: Teapot {
     }
 
     func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, Error?) -> Void)) {
-        let resource = (path as NSString).lastPathComponent
+        guard let resource = mockFileName else {
+            completion(nil, MockError.missingMockFileName("please specify the filename of your mock file"))
+            return 
+        }
 
         if let url = currentBundle.url(forResource: resource, withExtension: "json") {
             do {
