@@ -22,7 +22,6 @@ class TeapotTests: XCTestCase {
     
     func testGet() {
         let expectation = self.expectation(description: "Get")
-        var finishCounter = 0
 
         // pass
         self.teapot?.get("/get") { (result: NetworkResult) in
@@ -36,35 +35,14 @@ class TeapotTests: XCTestCase {
 
             XCTAssertNotNil(result)
 
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
+            expectation.fulfill()
         }
 
-        // fail
-        self.teapot?.put("/get") { (result: NetworkResult) in
-            switch result {
-            case .success(_, _):
-                break
-            case .failure(_, _, let error):
-                XCTAssertNotNil(error)
-            }
-
-            XCTAssertNotNil(result)
-
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.waitForExpectations(timeout: 10.0)
+        self.waitForExpectations(timeout: 20.0)
     }
 
     func testPost() {
         let expectation = self.expectation(description: "Post")
-        var finishCounter = 0
 
         // pass
         self.teapot?.post("/post") { (result) in
@@ -79,35 +57,14 @@ class TeapotTests: XCTestCase {
 
             XCTAssertNotNil(result)
 
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
+            expectation.fulfill()
         }
 
-        // fail
-        self.teapot?.get("/post") { (result: NetworkResult) in
-            switch result {
-            case .success(_, _):
-                break
-            case .failure(_, _, let error):
-                XCTAssertNotNil(error)
-            }
-
-            XCTAssertNotNil(result)
-
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.waitForExpectations(timeout: 10.0)
+        self.waitForExpectations(timeout: 20.0)
     }
 
     func testPut() {
         let expectation = self.expectation(description: "Put")
-        var finishCounter = 0
 
         // pass
         self.teapot?.put("/put") { (result) in
@@ -122,36 +79,14 @@ class TeapotTests: XCTestCase {
 
             XCTAssertNotNil(result)
 
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
+            expectation.fulfill()
         }
 
-        // fail
-        self.teapot?.post("/put") { (result) in
-
-            switch result {
-            case .success(_, _):
-                break
-            case .failure(_, _, let error):
-                XCTAssertNotNil(error)
-            }
-
-            XCTAssertNotNil(result)
-
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.waitForExpectations(timeout: 10.0)
+        self.waitForExpectations(timeout: 20.0)
     }
 
     func testDelete() {
         let expectation = self.expectation(description: "Delete")
-        var finishCounter = 0
 
         // pass
         self.teapot?.delete("/delete") { (result) in
@@ -166,31 +101,10 @@ class TeapotTests: XCTestCase {
 
             XCTAssertNotNil(result)
 
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
+            expectation.fulfill()
         }
 
-        // fail
-        self.teapot?.delete("/get") { (result) in
-
-            switch result {
-            case .success(_, _):
-                break
-            case .failure(_, _, let error):
-                XCTAssertNotNil(error)
-            }
-
-            XCTAssertNotNil(result)
-
-            finishCounter += 1
-            if finishCounter == 2 {
-                expectation.fulfill()
-            }
-        }
-
-        self.waitForExpectations(timeout: 10.0)
+        self.waitForExpectations(timeout: 20.0)
     }
 
     func testQuery() {
@@ -208,7 +122,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 10.0)
+        self.waitForExpectations(timeout: 20.0)
     }
 
     func testEscapedQuery() {
@@ -229,7 +143,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 10.0)
+        self.waitForExpectations(timeout: 20.0)
     }
 
     func testImage() {
@@ -251,6 +165,6 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.waitForExpectations(timeout: 10.0)
+        self.waitForExpectations(timeout: 20.0)
     }
 }
