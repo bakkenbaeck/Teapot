@@ -21,10 +21,10 @@ open class MockTeapot: Teapot {
     }
 
     private let currentBundle: Bundle
-    private let resource: String
+    private let mockFilename: String
     private let statusCode: StatusCode
 
-    private var overrideEndpointDictionary = [String: String]()
+    private var endpointsToOverride = [String: String]()
 
     /// Initialiser.
     ///
@@ -32,23 +32,23 @@ open class MockTeapot: Teapot {
     ///   - bundle: the bundle of your test target, where it will search for the mock file
     ///   - mockFileName: the name of the mock file containing the json that will be returned
     ///   - statusCode: the status code for the response to return errors. Default is 200 "ok" 👌
-    public init(bundle: Bundle, mockFileName: String, statusCode: StatusCode = .ok) {
+    public init(bundle: Bundle, mockFilename: String, statusCode: StatusCode = .ok) {
         self.currentBundle = bundle
-        self.resource = mockFileName
+        self.mockFilename = mockFilename
         self.statusCode = statusCode
 
         super.init(baseURL: URL(string: "https://mock.base.url.com")!)
     }
 
     /// overrideEndPoint.
-    /// call this method if you need a call to a certain endpoint to return a specified mock file
+    /// set the filename of the mocked json you want to return for a call to a certain endpoint
     /// for example when you have a security call to the server that get's called every time you do an APICall
     ///
     /// - Parameters:
-    ///   - endPoint: the endpoint tht needs to get overridden
-    ///   - fileName: the name of the json file from which you want the data to be returned
-    public func overrideEndPoint(_ endPoint: String, withFileName fileName: String) {
-        overrideEndpointDictionary[endPoint] = fileName
+    ///   - endPoint: the endpoint that needs to get overridden
+    ///   - filename: the name of the json file from which you want the data to be returned
+    public func overrideEndPoint(_ endPoint: String, withFilename filename: String) {
+        endpointsToOverride[endPoint] = filename
     }
 
     override func execute(verb _: Verb, path: String, parameters _: RequestParameter? = nil, headerFields _: [String: String]? = nil, timeoutInterval _: TimeInterval = 5.0, allowsCellular _: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
@@ -69,7 +69,7 @@ open class MockTeapot: Teapot {
 
     func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, Error?) -> Void)) {
         let endPoint = (path as NSString).lastPathComponent
-        let resource = overrideEndpointDictionary[endPoint] ?? self.resource
+        let resource = self.endpointsToOverride[endPoint] ?? self.mockFilename
 
         if let url = currentBundle.url(forResource: resource, withExtension: "json") {
             do {
