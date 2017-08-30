@@ -48,7 +48,7 @@ open class MockTeapot: Teapot {
     ///   - endPoint: the endpoint that needs to get overridden
     ///   - filename: the name of the json file from which you want the data to be returned
     public func overrideEndPoint(_ endPoint: String, withFilename filename: String) {
-        endpointsToOverride[endPoint] = filename
+        self.endpointsToOverride[endPoint] = filename
     }
 
     override func execute(verb _: Verb, path: String, parameters _: RequestParameter? = nil, headerFields _: [String: String]? = nil, timeoutInterval _: TimeInterval = 5.0, allowsCellular _: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
