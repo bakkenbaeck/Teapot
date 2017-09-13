@@ -54,10 +54,10 @@ open class Teapot {
     /// - Parameters:
     ///   - path: The relative path for the API call. Appended to the baseURL.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
-    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    open func get(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    open func get(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
 
         self.execute(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
@@ -68,10 +68,10 @@ open class Teapot {
     ///   - path: The relative path for the API call. Appended to the baseURL.
     ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
-    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
 
         self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
@@ -82,10 +82,10 @@ open class Teapot {
     ///   - path: The relative path for the API call. Appended to the baseURL.
     ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
-    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
         self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
@@ -95,10 +95,10 @@ open class Teapot {
     ///   - path: The relative path for the API call. Appended to the baseURL.
     ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
-    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func delete(_ path: String, parameters _: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    open func delete(_ path: String, parameters _: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
 
         self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
@@ -117,10 +117,10 @@ open class Teapot {
     ///   - path: The relative path for the API call.
     ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
-    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    func execute(verb: Verb, path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    func execute(verb: Verb, path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
         do {
             let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
@@ -152,10 +152,10 @@ open class Teapot {
     /// - Parameters:
     ///   - path: The relative path for the API call.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
-    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkImageResult once the request completes, always on main queue.
-    func downloadImage(path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true, completion: @escaping ((NetworkImageResult) -> Void)) {
+    func downloadImage(path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkImageResult) -> Void)) {
         do {
             let request = try self.request(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
@@ -163,6 +163,7 @@ open class Teapot {
                 switch result {
                 case .success(let image, let response):
                     // Handle non-2xx status as error.
+
                     if response.statusCode < 200 || response.statusCode > 299 {
                         let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus)
                         completion(errorResult)
@@ -189,10 +190,10 @@ open class Teapot {
     ///   - path: The relative path for the API call.
     ///   - parameters: a JSON object, to be sent as the HTTP body data.
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
-    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 60.0. See URLRequest doc for more.
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     /// - Returns: URLRequest
-    func request(verb: Verb, path: String? = nil, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 5.0, allowsCellular: Bool = true) throws -> URLRequest {
+    func request(verb: Verb, path: String? = nil, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true) throws -> URLRequest {
         guard var baseComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
 
         if let path = path, let pathURL = URL(string: path) {
@@ -204,7 +205,7 @@ open class Teapot {
 
         guard let url = baseComponents.url else { throw TeapotError.invalidRequestPath }
 
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeoutInterval)
+        var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: timeoutInterval)
         request.allowsCellularAccess = allowsCellular
         request.httpMethod = verb.rawValue
 
@@ -243,7 +244,6 @@ open class Teapot {
                 }
             }
 
-
             let result = NetworkResult(json, response as! HTTPURLResponse, error)
             completion(result)
         }
@@ -264,7 +264,7 @@ open class Teapot {
                 if let data = data {
                     image = Image(data: data)
                 }
-
+                
                 let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
                 completion(result)
             }
