@@ -3,10 +3,27 @@ import Foundation
 /// A light-weight abstraction for URLSession.
 open class Teapot {
 
-    public enum TeapotError: Error {
-        case invalidRequestPath
-        case invalidResponseStatus
-        case missingImage
+    public struct TeapotError: Error {
+
+        static let invalidRequestPath = TeapotError(responseStatus: -1, type: .invalidRequestPath, localizedDescription: "An error occurred: request URL path is invalid.")
+
+        static let missingImage = TeapotError(responseStatus: -1, type: .missingImage, localizedDescription: "An error occurred: image is missing.")
+
+        static func invalidResponseStatus(_ status: Int) -> TeapotError {
+            return TeapotError(responseStatus: status, type: .invalidResponseStatus, localizedDescription: "An error occurred: request response status reported an issue.")
+        }
+
+
+
+        enum ErrorType {
+            case invalidRequestPath
+            case invalidResponseStatus
+            case missingImage
+        }
+
+        let responseStatus: Int
+        let type: ErrorType
+        let localizedDescription: String
     }
 
     /// The URL request verb to be passed to the URLRequest.
@@ -129,7 +146,7 @@ open class Teapot {
                 case .success(let json, let response):
                     // Handle non-2xx status as error.
                     if response.statusCode < 200 || response.statusCode > 299 {
-                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus)
+                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus(response.statusCode) )
                         completion(errorResult)
                     } else {
                         completion(result)
@@ -165,7 +182,7 @@ open class Teapot {
                     // Handle non-2xx status as error.
 
                     if response.statusCode < 200 || response.statusCode > 299 {
-                        let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus)
+                        let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus(response.statusCode))
                         completion(errorResult)
                     } else {
                         completion(result)

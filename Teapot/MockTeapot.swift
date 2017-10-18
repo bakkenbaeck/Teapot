@@ -58,7 +58,7 @@ open class MockTeapot: Teapot {
             let requestParameter = json != nil ? RequestParameter(json!) : nil
 
             if self.statusCode.rawValue >= 300 {
-                mockedError = TeapotError.invalidResponseStatus
+                mockedError = TeapotError.invalidResponseStatus(self.statusCode.rawValue)
             }
 
             let networkResult = NetworkResult(requestParameter, response!, mockedError)
