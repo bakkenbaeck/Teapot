@@ -88,5 +88,5 @@ By default, we use Teapot's own `.strings` file:
 You can replace it with your own file, implementing those keys and set it globally with:
 
 ```swift
-Teapot.localizationBundle  = Bundle.myAppBundle
+Teapot.localizationBundle = Bundle.myAppBundle
 ```
