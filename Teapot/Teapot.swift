@@ -2,14 +2,15 @@ import Foundation
 
 /// A light-weight abstraction for URLSession.
 open class Teapot {
+    static var localizationBundle = Bundle.init(for: Teapot.self)
 
     public struct TeapotError: Error {
-        static let invalidRequestPath = TeapotError(responseStatus: -1, type: .invalidRequestPath, description: "An error occurred: request URL path is invalid.")
+        static let invalidRequestPath = TeapotError(responseStatus: -1, type: .invalidRequestPath, description: NSLocalizedString("InvalidRequestPath", bundle: Teapot.localizationBundle, comment: ""))
 
-        static let missingImage = TeapotError(responseStatus: -1, type: .missingImage, description: "An error occurred: image is missing.")
+        static let missingImage = TeapotError(responseStatus: -1, type: .missingImage, description: NSLocalizedString("MissingImage", bundle: Teapot.localizationBundle, comment: ""))
 
         static func invalidResponseStatus(_ status: Int) -> TeapotError {
-            return TeapotError(responseStatus: status, type: .invalidResponseStatus, description: "An error occurred: request response status reported an issue. Status code: \(status).")
+            return TeapotError(responseStatus: status, type: .invalidResponseStatus, description: String(format: NSLocalizedString("InvalidResponseStatus", bundle: Teapot.localizationBundle, comment: ""), status))
         }
 
         enum ErrorType {
