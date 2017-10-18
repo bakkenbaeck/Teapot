@@ -40,7 +40,7 @@ self.teapot.get("path") { result in
 ```
 
 ### Teapot itself
-Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method. It also has a stub `patch` method if your API interface requires it.
+Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method.
 
 ### Example API client
 
@@ -64,3 +64,13 @@ class APIClient {
     }
 }
 ```
+
+### Error handling
+
+The struct `TeapotError` conforms to `Error` and handles the following cases:
+
+1. Invalid request path: The path provided contains characters or a format that can't be resolved by `URLComponents`.
+2. Invalid response status. Status is not between 200 and 299, and is therefore treated as an error by Teapot (not necessarily by your Application, however).
+3. Image is missing. When using Teapot to download an image, if the result is nil.
+
+`TeapotError` also provides a simple yet descriptive error description. 
