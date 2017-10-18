@@ -5,12 +5,12 @@ open class Teapot {
 
     public struct TeapotError: Error {
 
-        static let invalidRequestPath = TeapotError(responseStatus: -1, type: .invalidRequestPath, localizedDescription: "An error occurred: request URL path is invalid.")
+        static let invalidRequestPath = TeapotError(responseStatus: -1, type: .invalidRequestPath, description: "An error occurred: request URL path is invalid.")
 
-        static let missingImage = TeapotError(responseStatus: -1, type: .missingImage, localizedDescription: "An error occurred: image is missing.")
+        static let missingImage = TeapotError(responseStatus: -1, type: .missingImage, description: "An error occurred: image is missing.")
 
         static func invalidResponseStatus(_ status: Int) -> TeapotError {
-            return TeapotError(responseStatus: status, type: .invalidResponseStatus, localizedDescription: "An error occurred: request response status reported an issue.")
+            return TeapotError(responseStatus: status, type: .invalidResponseStatus, description: "An error occurred: request response status reported an issue.")
         }
 
 
@@ -23,7 +23,8 @@ open class Teapot {
 
         let responseStatus: Int
         let type: ErrorType
-        let localizedDescription: String
+
+        let description: String
     }
 
     /// The URL request verb to be passed to the URLRequest.
