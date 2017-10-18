@@ -74,3 +74,19 @@ The struct `TeapotError` conforms to `Error` and handles the following cases:
 3. Image is missing. When using Teapot to download an image, if the result is nil.
 
 `TeapotError` also provides a simple yet descriptive error description. 
+
+#### Localising error strings
+
+By default, we use Teapot's own `.strings` file:
+
+```
+"InvalidRequestPath" = "An error occurred: request URL path is invalid.";
+"MissingImage" = "An error occurred: image is missing.";
+"InvalidResponseStatus" = "An error occurred: request response status reported an issue. Status code: %d.";
+```
+
+You can replace it with your own file, implementing those keys and set it globally with:
+
+```swift
+Teapot.localizationBundle  = Bundle.myAppBundle
+```
