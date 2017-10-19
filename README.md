@@ -80,9 +80,9 @@ The struct `TeapotError` conforms to `Error` and handles the following cases:
 By default, we use Teapot's own `.strings` file:
 
 ```
-"InvalidRequestPath" = "An error occurred: request URL path is invalid.";
-"MissingImage" = "An error occurred: image is missing.";
-"InvalidResponseStatus" = "An error occurred: request response status reported an issue. Status code: %d.";
+"Teapot:InvalidRequestPath" = "An error occurred: request URL path is invalid.";
+"Teapot:MissingImage" = "An error occurred: image is missing.";
+"Teapot:InvalidResponseStatus" = "An error occurred: request response status reported an issue. Status code: %d.";
 ```
 
 You can replace it with your own file, implementing those keys and set it globally with:

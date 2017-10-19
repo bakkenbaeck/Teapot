@@ -5,12 +5,12 @@ open class Teapot {
     static var localizationBundle = Bundle.init(for: Teapot.self)
 
     public struct TeapotError: Error {
-        static let invalidRequestPath = TeapotError(responseStatus: -1, type: .invalidRequestPath, localizedDescription: NSLocalizedString("InvalidRequestPath", bundle: Teapot.localizationBundle, comment: ""))
+        static let invalidRequestPath = TeapotError(responseStatus: -1, type: .invalidRequestPath, localizedDescription: NSLocalizedString("Teapot:InvalidRequestPath", bundle: Teapot.localizationBundle, comment: ""))
 
-        static let missingImage = TeapotError(responseStatus: -1, type: .missingImage, localizedDescription: NSLocalizedString("MissingImage", bundle: Teapot.localizationBundle, comment: ""))
+        static let missingImage = TeapotError(responseStatus: -1, type: .missingImage, localizedDescription: NSLocalizedString("Teapot:MissingImage", bundle: Teapot.localizationBundle, comment: ""))
 
         static func invalidResponseStatus(_ status: Int) -> TeapotError {
-            return TeapotError(responseStatus: status, type: .invalidResponseStatus, localizedDescription: String(format: NSLocalizedString("InvalidResponseStatus", bundle: Teapot.localizationBundle, comment: ""), status))
+            return TeapotError(responseStatus: status, type: .invalidResponseStatus, localizedDescription: String(format: NSLocalizedString("Teapot:InvalidResponseStatus", bundle: Teapot.localizationBundle, comment: ""), status))
         }
 
         enum ErrorType {
