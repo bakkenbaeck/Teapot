@@ -67,7 +67,7 @@ class APIClient {
 
 ### Error handling
 
-The struct `TeapotError` conforms to `Error` and handles the following cases:
+The struct `TeapotError` conforms to `LocalizedError` and handles the following cases:
 
 1. Invalid request path: The path provided contains characters or a format that can't be resolved by `URLComponents`.
 2. Invalid response status. Status is not between 200 and 299, and is therefore treated as an error by Teapot (not necessarily by your Application, however).

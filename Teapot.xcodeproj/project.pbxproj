@@ -14,6 +14,8 @@
 		9F7B89701E51DCC6009C192E /* Teapot+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7B896E1E51DA62009C192E /* Teapot+Images.swift */; };
 		9F7B89741E51E098009C192E /* app-draw-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9F7B89711E51E03C009C192E /* app-draw-icon.png */; };
 		9FB36EA41E7BE95900DB6F86 /* ResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB36EA31E7BE95900DB6F86 /* ResponseTests.swift */; };
+		9FBCA1081F9DD17900BFDF47 /* TeapotError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBCA1071F9DD17900BFDF47 /* TeapotError.swift */; };
+		9FBCA1091F9DD17900BFDF47 /* TeapotError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBCA1071F9DD17900BFDF47 /* TeapotError.swift */; };
 		9FED00D11E3A4EDA009A54B4 /* TeapotMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FED00C71E3A4EDA009A54B4 /* TeapotMac.framework */; };
 		9FED00D61E3A4EDA009A54B4 /* TeapotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FED00D51E3A4EDA009A54B4 /* TeapotTests.swift */; };
 		9FED00D81E3A4EDA009A54B4 /* Teapot.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FED00CA1E3A4EDA009A54B4 /* Teapot.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -47,6 +49,7 @@
 		9F7B896E1E51DA62009C192E /* Teapot+Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Teapot+Images.swift"; sourceTree = "<group>"; };
 		9F7B89711E51E03C009C192E /* app-draw-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-draw-icon.png"; sourceTree = "<group>"; };
 		9FB36EA31E7BE95900DB6F86 /* ResponseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseTests.swift; sourceTree = "<group>"; };
+		9FBCA1071F9DD17900BFDF47 /* TeapotError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeapotError.swift; sourceTree = "<group>"; };
 		9FED00C71E3A4EDA009A54B4 /* TeapotMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TeapotMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FED00CA1E3A4EDA009A54B4 /* Teapot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Teapot.h; sourceTree = "<group>"; };
 		9FED00CB1E3A4EDA009A54B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -115,6 +118,7 @@
 				9FED00FE1E3A4FF6009A54B4 /* RequestParameter.swift */,
 				9FED00FF1E3A4FF6009A54B4 /* NetworkResult.swift */,
 				9FED01001E3A4FF6009A54B4 /* Teapot.swift */,
+				9FBCA1071F9DD17900BFDF47 /* TeapotError.swift */,
 				9F7B896E1E51DA62009C192E /* Teapot+Images.swift */,
 				9F1D8B741E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift */,
 				D197B195CEC87D0FA798B47B /* MockTeapot.swift */,
@@ -309,6 +313,7 @@
 				9F7B89701E51DCC6009C192E /* Teapot+Images.swift in Sources */,
 				9FED01011E3A4FF6009A54B4 /* RequestParameter.swift in Sources */,
 				9FED01031E3A4FF6009A54B4 /* NetworkResult.swift in Sources */,
+				9FBCA1081F9DD17900BFDF47 /* TeapotError.swift in Sources */,
 				9FED01051E3A4FF6009A54B4 /* Teapot.swift in Sources */,
 				D197B176D5E1568F54764698 /* MockTeapot.swift in Sources */,
 			);
@@ -329,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F7B896F1E51DA62009C192E /* Teapot+Images.swift in Sources */,
+				9FBCA1091F9DD17900BFDF47 /* TeapotError.swift in Sources */,
 				9FED01021E3A4FF6009A54B4 /* RequestParameter.swift in Sources */,
 				9FED01041E3A4FF6009A54B4 /* NetworkResult.swift in Sources */,
 				9F1D8B751E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift in Sources */,
