@@ -2,7 +2,7 @@ import Foundation
 
 /// A light-weight abstraction for URLSession.
 open class Teapot {
-    open static var localizationBundle = Bundle.init(for: Teapot.self)
+    open static var localizationBundle = Bundle(for: Teapot.self)
 
     /// The URL request verb to be passed to the URLRequest.
     enum Verb: String {
