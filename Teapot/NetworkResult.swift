@@ -18,7 +18,7 @@ import Foundation
 public enum NetworkResult {
     case success(RequestParameter?, HTTPURLResponse)
 
-    case failure(RequestParameter?, HTTPURLResponse, Error)
+    case failure(RequestParameter?, HTTPURLResponse, TeapotError)
 
     public init(_ json: RequestParameter?, _ response: HTTPURLResponse, _ error: TeapotError? = nil) {
         if let error = error {
@@ -32,7 +32,7 @@ public enum NetworkResult {
 public enum NetworkImageResult {
     case success(Image, HTTPURLResponse)
 
-    case failure(HTTPURLResponse, Error)
+    case failure(HTTPURLResponse, TeapotError)
 
     public init(_ image: Image?, _ response: HTTPURLResponse, _ error: TeapotError? = nil) {
         if let error = error {

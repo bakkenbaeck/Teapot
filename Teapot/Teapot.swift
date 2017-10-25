@@ -136,7 +136,7 @@ open class Teapot {
         } catch {
             // Catch exceptions and handle them as errors for the client.
             let response = HTTPURLResponse(url: self.baseURL.appendingPathComponent(path), statusCode: 400, httpVersion: nil, headerFields: headerFields)!
-            let result = NetworkResult(nil, response, error)
+            let result = NetworkResult(nil, response, TeapotError.invalidPayload)
 
             completion(result)
         }
@@ -172,7 +172,7 @@ open class Teapot {
         } catch {
             // Catch exceptions and handle them as errors for the client.
             let response = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: headerFields)!
-            let result = NetworkImageResult(nil, response, error)
+            let result = NetworkImageResult(nil, response, TeapotError.invalidPayload)
 
             completion(result)
         }
@@ -239,7 +239,13 @@ open class Teapot {
                 }
             }
 
-            let result = NetworkResult(json, response as! HTTPURLResponse, error)
+            let result: NetworkResult
+            if let underlyingError = error {
+                result = NetworkResult(json, response as! HTTPURLResponse, TeapotError.dataTaskError(withUnderLyingError: underlyingError))
+            } else {
+                result = NetworkResult(json, response as! HTTPURLResponse, nil)
+            }
+
             completion(result)
         }
 
@@ -260,7 +266,12 @@ open class Teapot {
                     image = Image(data: data)
                 }
 
-                let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
+                let result: NetworkImageResult
+                if let underlyingError = error {
+                    result = NetworkImageResult(image, response as! HTTPURLResponse, TeapotError.dataTaskError(withUnderLyingError: underlyingError))
+                } else {
+                    result = NetworkImageResult(image, response as! HTTPURLResponse, nil)
+                }
                 completion(result)
             }
 
