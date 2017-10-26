@@ -2,12 +2,7 @@ import Foundation
 
 /// A light-weight abstraction for URLSession.
 open class Teapot {
-
-    public enum TeapotError: Error {
-        case invalidRequestPath
-        case invalidResponseStatus
-        case missingImage
-    }
+    open static var localizationBundle = Bundle(for: Teapot.self)
 
     /// The URL request verb to be passed to the URLRequest.
     enum Verb: String {
@@ -20,7 +15,7 @@ open class Teapot {
     // MARK: - Properties
 
     open lazy var runTaskQueue: DispatchQueue = {
-        return DispatchQueue(label: "com.backkenbaeck.Teapot.RunTaskQueue", qos: .background)
+        DispatchQueue(label: "com.backkenbaeck.Teapot.RunTaskQueue", qos: .background)
     }()
 
     open lazy var queue: OperationQueue = {
@@ -129,7 +124,7 @@ open class Teapot {
                 case .success(let json, let response):
                     // Handle non-2xx status as error.
                     if response.statusCode < 200 || response.statusCode > 299 {
-                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus)
+                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus(response.statusCode))
                         completion(errorResult)
                     } else {
                         completion(result)
@@ -165,7 +160,7 @@ open class Teapot {
                     // Handle non-2xx status as error.
 
                     if response.statusCode < 200 || response.statusCode > 299 {
-                        let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus)
+                        let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus(response.statusCode))
                         completion(errorResult)
                     } else {
                         completion(result)
@@ -264,11 +259,11 @@ open class Teapot {
                 if let data = data {
                     image = Image(data: data)
                 }
-                
+
                 let result = NetworkImageResult(image, response as! HTTPURLResponse, error)
                 completion(result)
             }
-            
+
             task.resume()
         }
     }

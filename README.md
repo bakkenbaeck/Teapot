@@ -40,7 +40,7 @@ self.teapot.get("path") { result in
 ```
 
 ### Teapot itself
-Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method. It also has a stub `patch` method if your API interface requires it.
+Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method.
 
 ### Example API client
 
@@ -63,4 +63,30 @@ class APIClient {
         }
     }
 }
+```
+
+### Error handling
+
+The struct `TeapotError` conforms to `LocalizedError` and handles the following cases:
+
+1. Invalid request path: The path provided contains characters or a format that can't be resolved by `URLComponents`.
+2. Invalid response status. Status is not between 200 and 299, and is therefore treated as an error by Teapot (not necessarily by your Application, however).
+3. Image is missing. When using Teapot to download an image, if the result is nil.
+
+`TeapotError` also provides a simple yet descriptive error description. 
+
+#### Localising error strings
+
+By default, we use Teapot's own `.strings` file:
+
+```
+"Teapot:InvalidRequestPath" = "An error occurred: request URL path is invalid.";
+"Teapot:MissingImage" = "An error occurred: image is missing.";
+"Teapot:InvalidResponseStatus" = "An error occurred: request response status reported an issue. Status code: %d.";
+```
+
+You can replace it with your own file, implementing those keys and set it globally with:
+
+```swift
+Teapot.localizationBundle = Bundle.myAppBundle
 ```

@@ -5,9 +5,6 @@ class TeapotTests: XCTestCase {
 
     var teapot: Teapot?
 
-    // WARNING: Replace this path with a newly created requestb.in address, since they're temporary.
-    var path = "/roqu1cro"
-    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
