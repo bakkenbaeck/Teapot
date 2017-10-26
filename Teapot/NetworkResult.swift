@@ -11,16 +11,16 @@ import Foundation
 /// NetworkResult
 ///
 /// This is passed by the Network layer completion blocks. The client implementation should know ahead of time if JSON is dictionary or array.
-/// Or acount for the possibility of both by using a switch.
+/// Or account for the possibility of both by using a switch.
 ///
 /// - success: Contains an optional JSON and an HTTPURLResponse. The parsing layer should know ahead of time if JSON is dictionary or array.
 /// - failure: Contains an optional JSON, an HTTPURLResponse and an Error. The parsing layer should know ahead of time if JSON is dictionary or array.
 public enum NetworkResult {
     case success(RequestParameter?, HTTPURLResponse)
 
-    case failure(RequestParameter?, HTTPURLResponse, Error)
+    case failure(RequestParameter?, HTTPURLResponse, TeapotError)
 
-    public init(_ json: RequestParameter?, _ response: HTTPURLResponse, _ error: Error? = nil) {
+    public init(_ json: RequestParameter?, _ response: HTTPURLResponse, _ error: TeapotError? = nil) {
         if let error = error {
             self = .failure(json, response, error)
         } else {
@@ -32,13 +32,13 @@ public enum NetworkResult {
 public enum NetworkImageResult {
     case success(Image, HTTPURLResponse)
 
-    case failure(HTTPURLResponse, Error)
+    case failure(HTTPURLResponse, TeapotError)
 
-    public init(_ image: Image?, _ response: HTTPURLResponse, _ error: Error? = nil) {
+    public init(_ image: Image?, _ response: HTTPURLResponse, _ error: TeapotError? = nil) {
         if let error = error {
             self = .failure(response, error)
         } else if image == nil {
-            self = .failure(response, Teapot.TeapotError.missingImage)
+            self = .failure(response, TeapotError.missingImage)
         } else {
             self = .success(image!, response)
         }

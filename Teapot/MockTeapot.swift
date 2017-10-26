@@ -14,12 +14,6 @@ open class MockTeapot: Teapot {
         case serviceUnavailable = 503
     }
 
-    /// Errors specific to parsing the specified mock file
-    public enum MockError: Error {
-        case missingMockFile(String)
-        case invalidMockFile(String)
-    }
-
     private let currentBundle: Bundle
     private let mockFilename: String
     private let statusCode: StatusCode
@@ -67,7 +61,7 @@ open class MockTeapot: Teapot {
         }
     }
 
-    func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, Error?) -> Void)) {
+    func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, TeapotError?) -> Void)) {
         let endPoint = (path as NSString).lastPathComponent
         let resource = self.endpointsToOverride[endPoint] ?? self.mockFilename
 
@@ -77,13 +71,13 @@ open class MockTeapot: Teapot {
                 if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     completion(json, nil)
                 } else {
-                    completion(nil, MockError.invalidMockFile("\(resource).json"))
+                    completion(nil, TeapotError.invalidMockFile(resource))
                 }
             } catch let error {
-                completion(nil, MockError.invalidMockFile("error: \(error.localizedDescription) In file: '\(resource).json'"))
+                completion(nil, TeapotError.invalidMockFile(resource))
             }
         } else {
-            completion(nil, MockError.missingMockFile("\(resource).json"))
+            completion(nil, TeapotError.missingMockFile(resource))
         }
     }
 }

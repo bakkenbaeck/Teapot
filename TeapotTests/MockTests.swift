@@ -24,9 +24,9 @@ class MockTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(_, _, let error):
-                switch error {
-                    case MockTeapot.MockError.missingMockFile(let fileName):
-                        XCTAssertEqual(fileName, "missing.json")
+                switch error.type {
+                    case .missingMockFile:
+                        XCTAssertEqual(error.errorDescription, "An error occurred: expected mockfile with name: missing.json")
                     default:
                         XCTFail()
                 }
@@ -42,9 +42,9 @@ class MockTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(_, _, let error):
-                switch error {
-                case MockTeapot.MockError.invalidMockFile(let fileName):
-                    XCTAssertEqual(fileName, "error: The data couldn’t be read because it isn’t in the correct format. In file: 'invalid.json'")
+                switch error.type {
+                case .invalidMockFile:
+                    XCTAssertEqual(error.errorDescription, "An error occurred: invalid mockfile with name: invalid.json")
                 default:
                     XCTFail()
                 }
