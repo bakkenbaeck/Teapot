@@ -31,7 +31,7 @@ public struct TeapotError: Error, CustomStringConvertible {
         return TeapotError(withType: .invalidMockFile, description: errorDescription)
     }
 
-    public enum ErrorType {
+    public enum ErrorType: Int {
         case dataTaskError
         case invalidPayload
         case invalidRequestPath
