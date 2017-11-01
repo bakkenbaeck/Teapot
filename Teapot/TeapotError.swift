@@ -31,7 +31,7 @@ public struct TeapotError: LocalizedError {
         return TeapotError(withType: .invalidMockFile, errorDescription: errorDescription)
     }
 
-    public enum ErrorType {
+    public enum ErrorType: Int {
         case dataTaskError
         case invalidPayload
         case invalidRequestPath
