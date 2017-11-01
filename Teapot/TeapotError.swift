@@ -31,7 +31,7 @@ public struct TeapotError: LocalizedError {
         return TeapotError(withType: .invalidMockFile, errorDescription: errorDescription)
     }
 
-    enum ErrorType {
+    public enum ErrorType {
         case dataTaskError
         case invalidPayload
         case invalidRequestPath
@@ -41,9 +41,9 @@ public struct TeapotError: LocalizedError {
         case invalidMockFile
     }
 
-    let responseStatus: Int?
-    let underlyingError: Error?
-    let type: ErrorType
+    public let responseStatus: Int?
+    public let underlyingError: Error?
+    public let type: ErrorType
 
     public var errorDescription: String
 
