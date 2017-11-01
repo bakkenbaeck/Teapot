@@ -47,7 +47,8 @@ public struct TeapotError: Error, CustomStringConvertible {
 
     public var description: String
 
-    init(withType type: ErrorType, description: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
+    public init(withType type: ErrorType, description: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
+        
         self.type = type
         self.description = description
         self.responseStatus = responseStatus
