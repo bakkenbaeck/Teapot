@@ -47,7 +47,7 @@ public struct TeapotError: LocalizedError {
 
     public var errorDescription: String
 
-    init(withType type: ErrorType, errorDescription: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
+    public init(withType type: ErrorType, errorDescription: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
         self.type = type
         self.errorDescription = errorDescription
         self.responseStatus = responseStatus
