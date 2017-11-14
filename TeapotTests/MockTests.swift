@@ -26,7 +26,7 @@ class MockTests: XCTestCase {
             case .failure(_, _, let error):
                 switch error.type {
                     case .missingMockFile:
-                        XCTAssertEqual(error.errorDescription, "An error occurred: expected mockfile with name: missing.json")
+                        XCTAssertEqual(error.description, "An error occurred: expected mockfile with name: missing.json")
                     default:
                         XCTFail()
                 }
@@ -44,7 +44,7 @@ class MockTests: XCTestCase {
             case .failure(_, _, let error):
                 switch error.type {
                 case .invalidMockFile:
-                    XCTAssertEqual(error.errorDescription, "An error occurred: invalid mockfile with name: invalid.json")
+                    XCTAssertEqual(error.description, "An error occurred: invalid mockfile with name: invalid.json")
                 default:
                     XCTFail()
                 }
