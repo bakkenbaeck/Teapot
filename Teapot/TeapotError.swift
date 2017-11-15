@@ -1,34 +1,34 @@
 import Foundation
 
-public struct TeapotError: LocalizedError {
+public struct TeapotError: Error, CustomStringConvertible {
     static func dataTaskError(withUnderLyingError error: Error) -> TeapotError {
         let errorDescription = String(format: NSLocalizedString("teapot_data_task_error", bundle: Teapot.localizationBundle, comment: ""), error.localizedDescription)
 
-        return TeapotError(withType: .dataTaskError, errorDescription: errorDescription, underlyingError: error)
+        return TeapotError(withType: .dataTaskError, description: errorDescription, underlyingError: error)
     }
 
-    static let invalidPayload = TeapotError(withType: .invalidPayload, errorDescription: NSLocalizedString("teapot_invalid_payload_path", bundle: Teapot.localizationBundle, comment: ""))
+    static let invalidPayload = TeapotError(withType: .invalidPayload, description: NSLocalizedString("teapot_invalid_payload_path", bundle: Teapot.localizationBundle, comment: ""))
 
-    static let invalidRequestPath = TeapotError(withType: .invalidRequestPath, errorDescription: NSLocalizedString("teapot_invalid_request_path", bundle: Teapot.localizationBundle, comment: ""))
+    static let invalidRequestPath = TeapotError(withType: .invalidRequestPath, description: NSLocalizedString("teapot_invalid_request_path", bundle: Teapot.localizationBundle, comment: ""))
 
-    static let missingImage = TeapotError(withType: .missingImage, errorDescription: NSLocalizedString("teapot_missing_image", bundle: Teapot.localizationBundle, comment: ""))
+    static let missingImage = TeapotError(withType: .missingImage, description: NSLocalizedString("teapot_missing_image", bundle: Teapot.localizationBundle, comment: ""))
 
     static func invalidResponseStatus(_ status: Int) -> TeapotError {
         let errorDescription = String(format: NSLocalizedString("teapot_invalid_response_status", bundle: Teapot.localizationBundle, comment: ""), status)
 
-        return TeapotError(withType: .invalidResponseStatus, errorDescription: errorDescription, responseStatus: status)
+        return TeapotError(withType: .invalidResponseStatus, description: errorDescription, responseStatus: status)
     }
 
     static func missingMockFile(_ fileName: String) -> TeapotError {
         let errorDescription =  String(format: NSLocalizedString("mockteapot_missing_mock_file", bundle: Teapot.localizationBundle, comment: ""),  fileName)
 
-        return TeapotError(withType: .missingMockFile, errorDescription: errorDescription)
+        return TeapotError(withType: .missingMockFile, description: errorDescription)
     }
 
     static func invalidMockFile(_ fileName: String) -> TeapotError {
         let errorDescription =  String(format: NSLocalizedString("mockteapot_invalid_mock_file", bundle: Teapot.localizationBundle, comment: ""), fileName)
         
-        return TeapotError(withType: .invalidMockFile, errorDescription: errorDescription)
+        return TeapotError(withType: .invalidMockFile, description: errorDescription)
     }
 
     enum ErrorType {
@@ -45,11 +45,11 @@ public struct TeapotError: LocalizedError {
     let underlyingError: Error?
     let type: ErrorType
 
-    public var errorDescription: String
+    public var description: String
 
-    init(withType type: ErrorType, errorDescription: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
+    init(withType type: ErrorType, description: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
         self.type = type
-        self.errorDescription = errorDescription
+        self.description = description
         self.responseStatus = responseStatus
         self.underlyingError = underlyingError
     }
