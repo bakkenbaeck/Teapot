@@ -1,0 +1,16 @@
+version: 2
+
+jobs:
+    build-and-test:
+        macos:
+            xcode: "9.1.0"
+        steps:
+            - checkout
+            - run:
+                name: Run tests
+                command: set -o pipefail && xcodebuild clean build test -project Teapot.xcodeproj -scheme "TeapotMac" | xcpretty --color && exit ${PIPESTATUS[0]}
+workflows:
+  version: 2
+  build-and-test:
+      jobs:
+          - build-and-test
