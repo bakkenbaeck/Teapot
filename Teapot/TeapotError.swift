@@ -31,7 +31,7 @@ public struct TeapotError: Error, CustomStringConvertible {
         return TeapotError(withType: .invalidMockFile, description: errorDescription)
     }
 
-    enum ErrorType {
+    public enum ErrorType: Int {
         case dataTaskError
         case invalidPayload
         case invalidRequestPath
@@ -41,13 +41,13 @@ public struct TeapotError: Error, CustomStringConvertible {
         case invalidMockFile
     }
 
-    let responseStatus: Int?
-    let underlyingError: Error?
-    let type: ErrorType
+    public let responseStatus: Int?
+    public let underlyingError: Error?
+    public let type: ErrorType
 
     public var description: String
 
-    init(withType type: ErrorType, description: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
+    public init(withType type: ErrorType, errorDescription: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
         self.type = type
         self.description = description
         self.responseStatus = responseStatus
