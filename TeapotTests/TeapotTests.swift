@@ -152,7 +152,7 @@ class TeapotTests: XCTestCase {
         Teapot(baseURL: url).get() { (result: NetworkImageResult) in
             switch result {
             case .success(let image, let response):
-                let localImage = Bundle(for: TeapotTests.self).image(forResource: "app-draw-icon")!
+                let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name(rawValue: "app-draw-icon"))!
 
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertEqual(image.tiffRepresentation!, localImage.tiffRepresentation!)
