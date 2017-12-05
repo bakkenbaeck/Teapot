@@ -1,6 +1,0 @@
-machine:
-  xcode:
-    version: 8.3.3
-test:
-  override:
-   - xcodebuild test -project Teapot.xcodeproj -scheme TeapotMac
