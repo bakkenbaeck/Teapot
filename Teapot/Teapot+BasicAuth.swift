@@ -1,5 +1,11 @@
 import Foundation
 
+extension String {
+    var _basicAuthenticationString: String? {
+        return self.data(using: .utf8)?.base64EncodedString()
+    }
+}
+
 public extension Teapot {
     /// The basic authentication header key value. Use this as the key in your headerFields dictionary.
     public var basicAuthenticationHeaderKey: String {
@@ -17,9 +23,7 @@ public extension Teapot {
     ///   - password: the basic auth password
     /// - Returns: basic authentication string with the format "Basic hexValue".
     public func basicAuthenticationValue(username: String, password: String) -> String? {
-        let authString = "\(username):\(password)"
-        guard let octetString = authString.data(using: .utf8) else { return nil }
-        let encodedString = octetString.base64EncodedString()
+        guard let encodedString = "\(username):\(password)"._basicAuthenticationString else { return nil }
 
         return "Basic \(encodedString)"
     }
@@ -34,9 +38,7 @@ public extension Teapot {
     ///   - password: the basic auth password
     /// - Returns: bais authentication header dictionary or nil.
     public func basicAuthenticationHeader(username: String, password: String) -> [String: String]? {
-        let authString = "\(username):\(password)"
-        guard let octetString = authString.data(using: .utf8) else { return nil }
-        let encodedString = octetString.base64EncodedString()
+        guard let encodedString = "\(username):\(password)"._basicAuthenticationString else { return nil }
 
         return [self.basicAuthenticationHeaderKey: "Basic \(encodedString)"]
     }
