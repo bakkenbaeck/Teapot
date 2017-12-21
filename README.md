@@ -39,6 +39,21 @@ self.teapot.get("path") { result in
 }
 ```
 
+### Basic Auth
+We have support for basic authorisation as well. Check `Teapot+BasicAuth.swift` for more details on what we provide and expose.
+
+You can get just the basic auth key string:
+```swift
+// "Basic YWRtaW46dGVzdDEyMw=="
+let basicAuthString = teapot.basicAuthenticationValue(username: "", password: "")
+```
+
+Or the complete header:
+```swift
+// ["Authorization": "Basic YWRtaW46dGVzdDEyMw=="]
+let basicAuthHeader = teapot.basicAuthenticationHeader(username:  "", password: "")
+```
+
 ### Teapot itself
 Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method.
 
