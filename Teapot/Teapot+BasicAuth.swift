@@ -30,8 +30,8 @@ public extension Teapot {
 
     /// Converts a username, password pair into a complete basic auth header.
     ///
-    /// - Example: ["Authorization": "Basic 0xfa0123456789086421af"
-    /// - Returns nil if we can't convert the string to an octet data.
+    /// - Example: ["Authorization": "Basic 0xfa0123456789086421af"]
+    /// - Returns an empty dictionary if we can't convert the string to an octet data.
     ///
     /// - Parameters:
     ///   - username: the basic auth username
