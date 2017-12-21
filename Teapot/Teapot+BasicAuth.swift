@@ -37,9 +37,9 @@ public extension Teapot {
     ///   - username: the basic auth username
     ///   - password: the basic auth password
     /// - Returns: bais authentication header dictionary or nil.
-    public func basicAuthenticationHeader(username: String, password: String) -> [String: String]? {
-        guard let encodedString = "\(username):\(password)"._basicAuthenticationString else { return nil }
+    public func basicAuthenticationHeader(username: String, password: String) -> [String: String] {
+        guard let basicAuthValue = self.basicAuthenticationValue(username: username, password: password) else { return [:] }
 
-        return [self.basicAuthenticationHeaderKey: "Basic \(encodedString)"]
+        return [self.basicAuthenticationHeaderKey: basicAuthValue]
     }
 }

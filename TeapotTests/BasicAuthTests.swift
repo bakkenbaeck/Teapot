@@ -23,10 +23,7 @@ class BasicAuthTests: XCTestCase {
     }
 
     func testHeader() {
-        guard let header = self.teapot.basicAuthenticationHeader(username: self.username, password: self.password) else {
-            XCTFail("Header was nil for username/password combo: \(self.username):\(password)")
-            return
-        }
+        let header = self.teapot.basicAuthenticationHeader(username: self.username, password: self.password)
 
         XCTAssertEqual(header, [self.teapot.basicAuthenticationHeaderKey: self.expectedBasicAuth])
     }
