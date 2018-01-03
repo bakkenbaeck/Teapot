@@ -91,4 +91,27 @@ class MockTests: XCTestCase {
             }
         }
     }
+    
+    func testEndpointOverriddingThenHittingOtherEndpointWithError() {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "", statusCode: .internalServerError)
+        mockedTeapot.overrideEndPoint("overridden", withFilename: "overridden")
+        
+        mockedTeapot.get("/overridden") { initialResult in
+            switch initialResult {
+            case .success(let json, _):
+                XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")
+                mockedTeapot.get("/get") { secondaryResult in
+                    switch secondaryResult {
+                    case .success:
+                        XCTFail("That should not have worked")
+                    case .failure(_, _, let error):
+                        print(error)
+                        XCTAssertEqual(error.responseStatus, 500)
+                    }
+                }
+            case .failure:
+                XCTFail("The overridden endpoint should have worked")
+            }
+        }
+    }
 }
