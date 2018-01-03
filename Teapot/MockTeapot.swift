@@ -34,24 +34,37 @@ open class MockTeapot: Teapot {
         super.init(baseURL: URL(string: "https://mock.base.url.com")!)
     }
 
-    /// overrideEndPoint.
-    /// set the filename of the mocked json you want to return for a call to a certain endpoint
-    /// for example when you have a security call to the server that get's called every time you do an APICall
+    /// Sets the filename of the mocked json you want to return for a call to a certain endpoint
+    /// For example, when you have a security call to the server that get's called every time you do an API call
+    ///
+    /// NOTE: This will ignore this instance's `statusCode` if the overridden endpoint is not the primary target of the call
+    ///       (ie, is not the GET/PUT/POST etc path). When you make that underlying security call, the call to this endpoint
+    ///       will still return as if all is well, but the main call will fail with this Teapot's `statusCode`. This allows
+    ///       better testing of failure handling for endpoints which require prerequisite calls.
     ///
     /// - Parameters:
-    ///   - endPoint: the endpoint that needs to get overridden
+    ///   - endPoint: the last path component of the endpoint which needs to get overridden
     ///   - filename: the name of the json file from which you want the data to be returned
     public func overrideEndPoint(_ endPoint: String, withFilename filename: String) {
         self.endpointsToOverride[endPoint] = filename
     }
 
+    /// Checks to see if there's an overridden endpoint file for a given path
+    ///
+    /// - Parameter path: The full path to check for a file for its endpoint
+    /// - Returns: [Optional] The filename of the file, or nil if there is no stored file
+    private func endpointFileNameForPath(_ path: String) -> String? {
+        let endPoint = (path as NSString).lastPathComponent
+        return self.endpointsToOverride[endPoint]
+    }
+    
     override func execute(verb _: Verb, path: String, parameters _: RequestParameter? = nil, headerFields _: [String: String]? = nil, timeoutInterval _: TimeInterval = 5.0, allowsCellular _: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
         self.getMockedData(forPath: path) { json, error in
             var mockedError = error
             let response = HTTPURLResponse(url: URL(string: path)!, statusCode: self.statusCode.rawValue, httpVersion: nil, headerFields: nil)
             let requestParameter = json != nil ? RequestParameter(json!) : nil
 
-            if self.statusCode.rawValue >= 300 {
+            if self.statusCode.rawValue >= 300 && self.endpointFileNameForPath(path) == nil {
                 mockedError = TeapotError.invalidResponseStatus(self.statusCode.rawValue)
             }
 
@@ -61,9 +74,8 @@ open class MockTeapot: Teapot {
         }
     }
 
-    func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, TeapotError?) -> Void)) {
-        let endPoint = (path as NSString).lastPathComponent
-        let resource = self.endpointsToOverride[endPoint] ?? self.mockFilename
+    private func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, TeapotError?) -> Void)) {
+        let resource = self.endpointFileNameForPath(path) ?? self.mockFilename
 
         if let url = currentBundle.url(forResource: resource, withExtension: "json") {
             do {
