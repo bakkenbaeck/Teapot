@@ -10,7 +10,7 @@ class ResponseTests: XCTestCase {
         XCTAssertNotNil(json.array)
         XCTAssertNotNil(json.data)
         XCTAssertNil(json.dictionary)
-        XCTAssertEqual(json.data!, data)
+        XCTAssertEqual(json.data, data)
     }
 
     func testFromDict() {
@@ -21,7 +21,7 @@ class ResponseTests: XCTestCase {
         XCTAssertNil(json.array)
         XCTAssertNotNil(json.data)
         XCTAssertNotNil(json.dictionary)
-        XCTAssertEqual(json.data!, data)
+        XCTAssertEqual(json.data, data)
     }
 
     func testDictFromData() {
@@ -31,7 +31,7 @@ class ResponseTests: XCTestCase {
         XCTAssertNil(json.array)
         XCTAssertNotNil(json.data)
         XCTAssertNotNil(json.dictionary)
-        XCTAssertEqual(json.data!, data)
+        XCTAssertEqual(json.data, data)
     }
 
     func testArrayFromData() {
@@ -42,8 +42,8 @@ class ResponseTests: XCTestCase {
         XCTAssertNotNil(json.data)
         XCTAssertNotNil(json.array)
         // internal data uses [] for dicts as well as arrays, so:
-        XCTAssertNotEqual(json.data!, data)
+        XCTAssertNotEqual(json.data, data)
         // but length should still match
-        XCTAssertEqual(json.data!.count, data.count)
+        XCTAssertEqual(json.data?.count, data.count)
     }
 }

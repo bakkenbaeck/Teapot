@@ -9,7 +9,7 @@ class MockTests: XCTestCase {
         mockedTeapot.get("/get") { (result: NetworkResult) in
             switch result {            
             case .success(let json, _):
-                XCTAssertEqual(json!.dictionary!["key"] as! String, "value")
+                XCTAssertEqual(json?.dictionary?["key"] as? String, "value")
             case .failure:
                 XCTFail()
             }
@@ -84,7 +84,7 @@ class MockTests: XCTestCase {
         mockedTeapot.get("/overridden") { (result: NetworkResult) in
             switch result {
             case .success(let json, _):
-                XCTAssertEqual(json!.dictionary!["overridden"] as! String, "value")
+                XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")
             case .failure(let error):
                 print(error)
                 XCTFail()
