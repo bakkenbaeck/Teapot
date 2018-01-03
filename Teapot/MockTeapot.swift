@@ -73,7 +73,7 @@ open class MockTeapot: Teapot {
                 } else {
                     completion(nil, TeapotError.invalidMockFile(resource))
                 }
-            } catch let error {
+            } catch {
                 completion(nil, TeapotError.invalidMockFile(resource))
             }
         } else {

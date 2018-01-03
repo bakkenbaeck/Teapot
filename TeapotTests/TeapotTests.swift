@@ -132,7 +132,7 @@ class TeapotTests: XCTestCase {
                     XCTAssertEqual(queryResult, "hello&&world")
                 }
                 break
-            case .failure(let json, let response, _):
+            case .failure:
                 XCTFail()
             }
 
