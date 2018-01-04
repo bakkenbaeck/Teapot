@@ -7,12 +7,11 @@ class TeapotTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+
         self.teapot = Teapot(baseURL: URL(string: "https://httpbin.org")!)
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
         self.teapot = nil
         super.tearDown()
     }
@@ -20,7 +19,6 @@ class TeapotTests: XCTestCase {
     func testGet() {
         let expectation = self.expectation(description: "Get")
 
-        // pass
         self.teapot?.get("/get") { (result: NetworkResult) in
             switch result {
             case .success(let json, let response):
@@ -41,7 +39,6 @@ class TeapotTests: XCTestCase {
     func testPost() {
         let expectation = self.expectation(description: "Post")
 
-        // pass
         self.teapot?.post("/post") { (result) in
 
             switch result {
@@ -63,7 +60,6 @@ class TeapotTests: XCTestCase {
     func testPut() {
         let expectation = self.expectation(description: "Put")
 
-        // pass
         self.teapot?.put("/put") { (result) in
 
             switch result {
@@ -132,7 +128,7 @@ class TeapotTests: XCTestCase {
                     XCTAssertEqual(queryResult, "hello&&world")
                 }
                 break
-            case .failure(let json, let response, _):
+            case .failure:
                 XCTFail()
             }
 
@@ -144,21 +140,26 @@ class TeapotTests: XCTestCase {
     }
 
     func testImage() {
-        // http://icons.iconarchive.com 
-        // /icons/martz90/circle/512/app-draw-icon.png
         let expectation = self.expectation(description: "GetImage")
         let url = URL(string: "http://icons.iconarchive.com/icons/martz90/circle/512/app-draw-icon.png")!
 
         Teapot(baseURL: url).get() { (result: NetworkImageResult) in
             switch result {
             case .success(let image, let response):
-                let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name(rawValue: "app-draw-icon"))!
+                guard
+                    let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name(rawValue: "app-draw-icon")),
+                    let tiff = localImage.tiffRepresentation else {
+                        XCTFail("Could not create local image TIFF")
+                        expectation.fulfill()
+                        return
+                }
 
                 XCTAssertEqual(response.statusCode, 200)
-                XCTAssertEqual(image.tiffRepresentation!, localImage.tiffRepresentation!)
+                XCTAssertEqual(image.tiffRepresentation, tiff)
                 expectation.fulfill()
             case .failure(_, _):
-                break
+                XCTFail("Network call for image failed")
+                expectation.fulfill()
             }
         }
 
