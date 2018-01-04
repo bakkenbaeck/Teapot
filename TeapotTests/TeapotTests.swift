@@ -146,10 +146,12 @@ class TeapotTests: XCTestCase {
         Teapot(baseURL: url).get() { (result: NetworkImageResult) in
             switch result {
             case .success(let image, let response):
-                guard let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name(rawValue: "app-draw-icon")), let tiff = localImage.tiffRepresentation else {
-                    XCTFail("Could not create local image TIFF")
-                    expectation.fulfill()
-                    return
+                guard
+                    let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name(rawValue: "app-draw-icon")),
+                    let tiff = localImage.tiffRepresentation else {
+                        XCTFail("Could not create local image TIFF")
+                        expectation.fulfill()
+                        return
                 }
 
                 XCTAssertEqual(response.statusCode, 200)
