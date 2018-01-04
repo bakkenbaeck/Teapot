@@ -108,3 +108,159 @@ You can replace it with your own file, implementing those keys and set it global
 ```swift
 Teapot.localizationBundle = Bundle.myAppBundle
 ```
+
+## Mocking 
+
+To mock network calls for testing, you can use a `MockTeapot` instead of a standard `Teapot`. This allows you to return the contents of a file when the `MockTeapot` instance is next used. For example: 
+
+```swift
+let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), 
+							  mockFilename: "get")
+```
+
+Will look in the test bundle for a file named `get.json`, and then return its contents whenever the next method is called on the `MockTeapot`: 
+
+```swift
+mockedTeapot.get("/get") { result in
+	// result will be `.success` and the contents of `get.json` are returned
+}
+```
+
+You can also specify the status code you wish to receive back from the `MockTeapot`. This is useful for testing error handling: 
+
+```swift
+let mockedFailingTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), 
+                                     mockFilename: "get", 
+                                     statusCode: .unauthorized)
+                                     
+mockedFailingTeapot.get("/get") { result in
+     // Result will be `.failure` and the response status code will be 401 Unauthorized
+}
+```
+
+### Overriding Specified Endpoints With A Mock
+
+Occasionally, you will need to hit an endpoint such as retrieving a timestamp or an `XSRF` token prior to making your actual call. 
+
+Here is an example of an API which uses a `Teapot` instance to do something like this: 
+
+```swift 
+class API {
+ 
+    static var currentTeapot: Teapot!
+
+    private static func getTimestamp(completion: (_ timestamp: Int?, error: TeapotError?) -> Void) {
+		currentTeapot.get("/timestamp") { result in 
+			switch result {
+			case .success(let _, response): 
+				guard let timestamp = /* something from the response */ else {
+					let timestampParseError = TeapotError(type: .invalidMockFile, 
+					                					  description: "Error parsing timestamp",
+					                					  responseStatus: response.statusCode, 
+					                					  underlyingError: nil)
+					completion(nil, timestampParseError)
+					return
+				}
+				
+				completion(timestamp, nil)
+			case .failure(let _, _, error):
+				let timestampFetchError = TeapotError(type: error.type,
+				                                      description: "Error fetching timestamp",
+				                                      responseStatus: error.responseStatus,
+				                                      underlyingError: error)
+				completion(nil, timestampFetchError) 
+			}
+		}
+    } 
+    
+    static func fetchSecureString(completion: (_ secureString: String?, error: TeapotError?) -> Void) {
+		getTimestamp { timestamp, error in 
+			guard let timestamp = timestamp else {
+    			completion (nil, error)
+    			return 
+    		}    		
+   			let headers = [ "Timestamp" : timestamp ]
+			currentTeapot.get("/something_secure", headerFields: headers) { result in 
+				switch result {
+				case .success(let _, response) { 
+					guard let secureString = /* something from the response */ else {
+						let stringParseError = TeapotError(type: .invalidMockFile,
+						                                   description: "Error parsing secure string",
+						                                   responseStatus: response.statusCode,
+						                                   underlyingError: nil)
+						completion(nil, stringParseError)
+						return 
+					}
+					completion(secureString, nil)
+				case .failure(let _, _, error): {
+					let stringFetchError = TeapotError(type: error.type,
+							    					   description: "Error fetching secure string",
+							    					   responseStatus: error.responseStatus,
+							    					   underlyingError: error)
+					completion(nil, stringFetchError)
+				}
+			}
+		}
+    }
+}
+```
+
+If you wanted to write a test of this API, you'd want to write something like: 
+
+```swift
+func testGettingSecureString() {
+	let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), 
+								  mockFilename: "something_secure")
+	API.teapot = mockedTeapot
+	
+	API.fetchSecureString { secureString, error in 
+		XCTAssertNil(error)
+		XCTAssertNotNil(secureString)
+		XCTAssertEqual(secureString, "expected secure string")
+	}
+}
+```
+
+However, without any changes, this would cause the `timestamp` endpoint to return the contents of `something_secure.json`. This is not what you want, since that would cause an error in the underlying `getTimestamp` method, causing your test to fail. 
+
+This is where overriding comes in - you can specify that data can be returned for a particular endpoint which is not the direct thing being called by your API. Here, the same test is updated to include an override on the `timestamp` endpoint:
+
+```swift
+func testGettingSecureString() {
+	let mockedOverriddenTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), 
+								 			mockFilename: "something_secure")
+	// Tell the mock teapot to return a particular file for a particular endpoint
+	mockedOverriddenTeapot.overrideEndPoint("timestamp", withFilename: "timestamp")	
+	API.teapot = mockedOverriddenTeapot
+	
+	API.fetchSecureString { secureString, error in 
+		XCTAssertNil(error)
+		XCTAssertNotNil(secureString)
+		XCTAssertEqual(secureString, "expected secure string")
+	}
+}
+```
+
+Now, your test will be passing or failing based on what's happening in the bulk of `getSecureString` rather than just the `getTimestamp` bit. 
+
+Note: If you specify both an overridden endpoint and a failure status, that failure status will not be applied to the endpoint you overrode. 
+
+```swift
+func testUnauthorizedTryingToGetSecureString() {
+	let mockedOverriddenFailingTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), 
+				  								   mockFilename: "something_secure",
+				  								   statusCode: .unauthorized)
+	// Tell the mock teapot to return a particular file for a particular endpoint
+	mockedOverriddenTeapot.overrideEndPoint("timestamp", withFilename: "timestamp")	
+	API.teapot = mockedOverriddenTeapot
+
+	API.fetchSecureString { secureString, error in 
+		XCTAssertNil(secureString)
+		XCTAssertNotNil(error)
+		XCTAssertEqual(error?.description, "Error fetching secure string")
+		XCTAssertEqual(error?.responseStatus, 401)
+	}
+}
+```
+
+This allows you to make sure the failure is actually going through the main error handling in `fetchSecureString` rather than just dying as soon as the `timestamp` endpoint is hit. 
