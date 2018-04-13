@@ -58,7 +58,8 @@ open class MockTeapot: Teapot {
         return self.endpointsToOverride[endPoint]
     }
     
-    override func execute(verb _: Verb, path: String, parameters _: RequestParameter? = nil, headerFields _: [String: String]? = nil, timeoutInterval _: TimeInterval = 5.0, allowsCellular _: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    override func execute(verb: Teapot.Verb, path: String, parameters: RequestParameter?, headerFields: [String : String]?, timeoutInterval: TimeInterval, allowsCellular: Bool, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+
         self.getMockedData(forPath: path) { json, error in
             var mockedError = error
             let response = HTTPURLResponse(url: URL(string: path)!, statusCode: self.statusCode.rawValue, httpVersion: nil, headerFields: nil)
@@ -72,6 +73,8 @@ open class MockTeapot: Teapot {
 
             completion(networkResult)
         }
+
+        return nil // there's no real request happening.
     }
 
     private func getMockedData(forPath path: String, completion: @escaping (([String: Any]?, TeapotError?) -> Void)) {

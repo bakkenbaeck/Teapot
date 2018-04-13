@@ -7,7 +7,7 @@ A light-weight URLSession wrapper for building simple API clients.
 
 <img src="./teapot.png" width=257 height=200 />
 
-Teapot consists of a only three simple structures: a JSON optional-like container, a NetworkResult container, and the Teapot itself, that acts as a nice thin wrapper around URLSession.
+Teapot consists of three simple structures: a JSON optional-like container, a NetworkResult container, and the Teapot itself, that acts as a nice thin wrapper around URLSession.
 
 ### JSON
 The `JSON` structure is simple enum with two cases: dictionary and array. The API is designed considering that the routing model should know if the JSON will be a dictionary or an array, but also to accommodate for cases where they won’t.
@@ -82,6 +82,23 @@ class APIClient {
     }
 }
 ```
+
+### Cancelling, suspending, resuming, and so on…
+
+Each of the verb methods return an optional `URLSessionTask` object (it will only be nil if the request path is invalid). 
+
+```swift
+    let task = teapot.get("/path/here") { }
+    // something changed and we need to wait
+    task?.suspend()
+    // user decided to cancel the operation completely, or resume
+    if cancelOperation {
+        task?.cancel()
+    } else {
+        task?.resume()
+     }
+```
+
 
 ### Error handling
 
