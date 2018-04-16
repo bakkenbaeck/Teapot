@@ -53,9 +53,10 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    open func get(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
+    @discardableResult open func get(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
 
-        self.execute(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+        return self.execute(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
     /// Perform a POST operation.
@@ -67,9 +68,10 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
+    @discardableResult open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
 
-        self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+        return self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
     /// Perform a PUT operation.
@@ -81,8 +83,9 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
-        self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+    /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
+    @discardableResult open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+        return self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
     /// Perform a DELETE operation.
@@ -94,9 +97,10 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
-    open func delete(_ path: String, parameters _: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
+    @discardableResult open func delete(_ path: String, parameters _: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
 
-        self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+        return self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
     /*
@@ -116,11 +120,12 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
-    func execute(verb: Verb, path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) {
+    /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
+    func execute(verb: Verb, path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
         do {
             let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-            self.runTask(with: request) { (result: NetworkResult) in
+            let task = self.runTask(with: request) { (result: NetworkResult) in
                 switch result {
                 case .success(let json, let response):
                     // Handle non-2xx status as error.
@@ -134,12 +139,16 @@ open class Teapot {
                     completion(result)
                 }
             }
+
+            return task
         } catch {
             // Catch exceptions and handle them as errors for the client.
             let response = HTTPURLResponse(url: self.baseURL.appendingPathComponent(path), statusCode: 400, httpVersion: nil, headerFields: headerFields)!
             let result = NetworkResult(nil, response, TeapotError.invalidPayload)
 
             completion(result)
+
+            return nil
         }
     }
 
@@ -151,11 +160,12 @@ open class Teapot {
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
     ///   - completion: The completion block, called with a NetworkImageResult once the request completes, always on main queue.
-    func downloadImage(path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkImageResult) -> Void)) {
+    /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
+    @discardableResult func downloadImage(path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkImageResult) -> Void)) -> URLSessionTask? {
         do {
             let request = try self.request(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-            self.runTask(with: request) { (result: NetworkImageResult) in
+            let task = self.runTask(with: request) { (result: NetworkImageResult) in
                 switch result {
                 case .success(let image, let response):
                     // Handle non-2xx status as error.
@@ -170,12 +180,16 @@ open class Teapot {
                     completion(result)
                 }
             }
+
+            return task
         } catch {
             // Catch exceptions and handle them as errors for the client.
             let response = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: headerFields)!
             let result = NetworkImageResult(nil, response, TeapotError.invalidPayload)
 
             completion(result)
+
+            return nil
         }
     }
 
@@ -227,7 +241,7 @@ open class Teapot {
         return request
     }
 
-    func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) {
+    func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
         let task = self.session.dataTask(with: request) { data, response, error in
             guard let response = response else { return }
 
@@ -251,33 +265,37 @@ open class Teapot {
         }
 
         task.resume()
+
+        return task
     }
 
-    func runTask(with request: URLRequest, completion: @escaping ((NetworkImageResult) -> Void)) {
-        self.runTaskQueue.async {
-            let task = self.session.dataTask(with: request) { data, response, error in
-                guard let response = response else {
-                    NSLog(error?.localizedDescription ?? "Fatal error with request: \(request).")
+    func runTask(with request: URLRequest, completion: @escaping ((NetworkImageResult) -> Void)) -> URLSessionTask {
+        let task = self.session.dataTask(with: request) { data, response, error in
+            guard let response = response else {
+                NSLog(error?.localizedDescription ?? "Fatal error with request: \(request).")
 
-                    return
-                }
-
-                var image: Image?
-                if let data = data {
-                    image = Image(data: data)
-                }
-
-                let result: NetworkImageResult
-                if let underlyingError = error {
-                    result = NetworkImageResult(image, response as! HTTPURLResponse, TeapotError.dataTaskError(withUnderLyingError: underlyingError))
-                } else {
-                    result = NetworkImageResult(image, response as! HTTPURLResponse, nil)
-                }
-
-                completion(result)
+                return
             }
 
+            var image: Image?
+            if let data = data {
+                image = Image(data: data)
+            }
+
+            let result: NetworkImageResult
+            if let underlyingError = error {
+                result = NetworkImageResult(image, response as! HTTPURLResponse, TeapotError.dataTaskError(withUnderLyingError: underlyingError))
+            } else {
+                result = NetworkImageResult(image, response as! HTTPURLResponse, nil)
+            }
+
+            completion(result)
+        }
+
+        self.runTaskQueue.async {
             task.resume()
         }
+
+        return task
     }
 }

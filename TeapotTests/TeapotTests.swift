@@ -165,4 +165,17 @@ class TeapotTests: XCTestCase {
 
         self.waitForExpectations(timeout: 20.0)
     }
+
+    func testCancelRequest() {
+        guard let task = self.teapot?.get("/get", completion: { (result: NetworkResult) in
+            XCTFail() // we're cancelling the task, it should never complete.
+        }) else {
+            XCTFail()
+            return
+        }
+
+        task.cancel()
+
+        XCTAssertEqual(task.state, URLSessionTask.State.canceling)
+    }
 }
