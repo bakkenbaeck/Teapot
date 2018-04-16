@@ -35,7 +35,7 @@ open class Teapot {
         return session
     }()
 
-    open private(set) var baseURL: URL
+    open var baseURL: URL
 
     // MARK: - Initialiser
 
