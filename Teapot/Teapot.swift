@@ -130,8 +130,17 @@ open class Teapot {
                 case .success(let json, let response):
                     // Handle non-2xx status as error.
                     if response.statusCode < 200 || response.statusCode > 299 {
-                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus(response.statusCode))
-                        completion(errorResult)
+                        // If there is an error sent from backend, its message should be shown
+                        if let errors = json?.dictionary?["errors"] as? [[String: Any]], let error = errors.first, let message = error["message"] as? String {
+
+                            let responseError = TeapotError(withType: .invalidResponseStatus, description: message)
+                            let errorResult = NetworkResult(json, response, responseError)
+                            completion(errorResult)
+                        } else {
+
+                            let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus(response.statusCode))
+                            completion(errorResult)
+                        }
                     } else {
                         completion(result)
                     }
