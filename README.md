@@ -281,3 +281,19 @@ func testUnauthorizedTryingToGetSecureString() {
 ```
 
 This allows you to make sure the failure is actually going through the main error handling in `fetchSecureString` rather than just dying as soon as the `timestamp` endpoint is hit. 
+
+You can also validate that certain headers are present and match what they are expected to be. This is useful if you need to provide signatures in your headers and want to make sure they're there without needing to hit a live API. 
+
+To add headers to check for: 
+
+```swift
+teapot.setExpectedHeaders([
+    "foo": "bar",
+    "baz": "foo2",
+])
+```
+
+Then, when the next method is called on the teapot, it will validate that header fields for both expected headers are there and have the appropriate value.
+
+Note: This does not check that these are the **only** headers included, but that at **least** these headers are included. 
+
