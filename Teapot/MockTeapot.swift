@@ -20,6 +20,8 @@ open class MockTeapot: Teapot {
 
     private var endpointsToOverride = [String: String]()
 
+    private var headersToCheckFor = [String: String]()
+
     /// Initialiser.
     ///
     /// - Parameters:
@@ -49,6 +51,20 @@ open class MockTeapot: Teapot {
         self.endpointsToOverride[endPoint] = filename
     }
 
+    /// Sets up a set of headers to check for the presence of.
+    /// Other headers can be present, but these are the ones which must be present.
+    ///
+    /// - Parameter expectedHeaders: The headers to check for
+    public func setExpectedHeaders(_ expectedHeaders: [String: String]) {
+        self.headersToCheckFor = expectedHeaders
+    }
+
+    /// Removes any expected headers to check for.
+    /// Should be called after each test.
+    public func clearExpectedHeaders() {
+        self.headersToCheckFor.removeAll()
+    }
+
     /// Checks to see if there's an overridden endpoint file for a given path
     ///
     /// - Parameter path: The full path to check for a file for its endpoint
@@ -59,6 +75,12 @@ open class MockTeapot: Teapot {
     }
     
     override func execute(verb: Teapot.Verb, path: String, parameters: RequestParameter?, headerFields: [String : String]?, timeoutInterval: TimeInterval, allowsCellular: Bool, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+
+        guard checkHeadersAgainstExpected(headers: headerFields) else {
+            let errorResult = NetworkResult(nil, HTTPURLResponse(url: URL(string: path)!, statusCode: -1, httpVersion: nil, headerFields: nil)!, TeapotError.incorrectHeaders(expected: headersToCheckFor, received: headerFields))
+            completion(errorResult)
+            return nil
+        }
 
         self.getMockedData(forPath: path) { json, error in
             var mockedError = error
@@ -94,5 +116,21 @@ open class MockTeapot: Teapot {
         } else {
             completion(nil, TeapotError.missingMockFile(resource))
         }
+    }
+
+    private func checkHeadersAgainstExpected(headers: [String: String]?) -> Bool {
+        guard !headersToCheckFor.isEmpty else { /* nothing to check */ return true }
+
+        guard let received = headers else { /* We want to check but there's nothing to check */ return false }
+
+        for (key, value) in headersToCheckFor {
+            let receivedValue = received[key]
+            if receivedValue != value {
+                return false
+            }
+        }
+
+        // If you've gotten here, all the keys you want are present.
+        return true 
     }
 }

@@ -31,6 +31,12 @@ public struct TeapotError: Error, CustomStringConvertible {
         return TeapotError(withType: .invalidMockFile, description: errorDescription)
     }
 
+    static func incorrectHeaders(expected: [String: String], received: [String: String]?) -> TeapotError {
+        let errorDescription = String(format: NSLocalizedString("mockteapot_invalid_headers", bundle: Teapot.localizationBundle, comment: ""), String(describing: received), String(describing: expected))
+
+        return TeapotError(withType: .incorrectHeaders, description: errorDescription)
+    }
+
     public enum ErrorType: Int {
         case dataTaskError
         case invalidPayload
@@ -39,6 +45,7 @@ public struct TeapotError: Error, CustomStringConvertible {
         case missingImage
         case missingMockFile
         case invalidMockFile
+        case incorrectHeaders
     }
 
     public let responseStatus: Int?

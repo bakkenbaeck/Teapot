@@ -4,5 +4,4 @@
 "teapot_invalid_response_status" = "An error occurred: request response status reported an issue. Status code: %d.";
 "mockteapot_missing_mock_file" = "An error occurred: expected mockfile with name: %@.json";
 "mockteapot_invalid_mock_file" = "An error occurred: invalid mockfile with name: %@.json";
-
-
+"mockteapot_invalid_headers" = "An error occurred: Received headers:\n\n%1$@\n\nExpected headers:\n\n%2$@\n\n";
