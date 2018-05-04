@@ -121,10 +121,12 @@ open class MockTeapot: Teapot {
     private func checkHeadersAgainstExpected(headers: [String: String]?) -> Bool {
         guard !headersToCheckFor.isEmpty else { /* nothing to check */ return true }
 
-        guard let received = headers else { /* We want to check but there's nothing to check */ return false }
+        guard let receivedHeaders = headers else { /* We want to check but nothing was received */ return false }
+
+        receivedHeaders.contains(headersToCheckFor)
 
         for (key, value) in headersToCheckFor {
-            let receivedValue = received[key]
+            let receivedValue = receivedHeaders[key]
             if receivedValue != value {
                 return false
             }
