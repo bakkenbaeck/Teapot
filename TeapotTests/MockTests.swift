@@ -114,4 +114,66 @@ class MockTests: XCTestCase {
             }
         }
     }
+
+    func testCheckingForHeadersWhichAreThereSucceeds() {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get")
+
+        let expectedHeaders = [
+            "foo": "bar",
+            "baz": "foo2",
+        ]
+
+        mockedTeapot.setExpectedHeaders(expectedHeaders)
+
+        mockedTeapot.get("/get", headerFields: expectedHeaders) { result in
+            switch result {
+            case .success(let json, _):
+                XCTAssertEqual(json?.dictionary?["key"] as? String, "value")
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
+    func testCheckingForHeadersWhichAreNotThereReturnsError() {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get")
+
+        let expectedHeaders = [
+            "foo": "bar",
+            "baz": "foo2",
+        ]
+
+        mockedTeapot.setExpectedHeaders(expectedHeaders)
+
+        mockedTeapot.get("/get") { result in
+            switch result {
+            case .success:
+                XCTFail("Request suceceeded which should not have!")
+            case .failure(_, let response, let error):
+                XCTAssertEqual(response.statusCode, 400)
+                XCTAssertEqual(error.type, .incorrectHeaders)
+            }
+        }
+    }
+
+    func testCheckingForPartialHeadersReturnsError() {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get")
+
+        let expectedHeaders = [
+            "foo": "bar",
+            "baz": "foo2",
+        ]
+
+        mockedTeapot.setExpectedHeaders(expectedHeaders)
+
+        mockedTeapot.get("/get", headerFields: [ "foo" : "bar" ]) { result in
+            switch result {
+            case .success:
+                XCTFail("Request suceceeded which should not have!")
+            case .failure(_, let response, let error):
+                XCTAssertEqual(response.statusCode, 400)
+                XCTAssertEqual(error.type, .incorrectHeaders)
+            }
+        }
+    }
 }

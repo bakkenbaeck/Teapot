@@ -77,7 +77,7 @@ open class MockTeapot: Teapot {
     override func execute(verb: Teapot.Verb, path: String, parameters: RequestParameter?, headerFields: [String : String]?, timeoutInterval: TimeInterval, allowsCellular: Bool, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
 
         guard checkHeadersAgainstExpected(headers: headerFields) else {
-            let errorResult = NetworkResult(nil, HTTPURLResponse(url: URL(string: path)!, statusCode: -1, httpVersion: nil, headerFields: nil)!, TeapotError.incorrectHeaders(expected: headersToCheckFor, received: headerFields))
+            let errorResult = NetworkResult(nil, HTTPURLResponse(url: URL(string: path)!, statusCode: 400, httpVersion: nil, headerFields: nil)!, TeapotError.incorrectHeaders(expected: headersToCheckFor, received: headerFields))
             completion(errorResult)
             return nil
         }
@@ -131,6 +131,6 @@ open class MockTeapot: Teapot {
         }
 
         // If you've gotten here, all the keys you want are present.
-        return true 
+        return true
     }
 }
