@@ -167,15 +167,38 @@ class TeapotTests: XCTestCase {
     }
 
     func testCancelRequest() {
+        let invertedExpecation = expectation(description: "Request completed")
+        invertedExpecation.isInverted = true
+
         guard let task = self.teapot?.get("/get", completion: { (result: NetworkResult) in
-            XCTFail() // we're cancelling the task, it should never complete.
+            // This should not happen, so we fulfill the inverted expectation
+            invertedExpecation.fulfill()
         }) else {
-            XCTFail()
+            XCTFail("Could not create task")
             return
         }
 
         task.cancel()
 
-        XCTAssertEqual(task.state, URLSessionTask.State.canceling)
+        // Here, we wait a tiny bit to make sure the inverted expectation is *not* fulfilled
+        self.waitForExpectations(timeout: 0.5, handler: nil)
+
+        // Then we check the cancellation state.
+        switch task.state {
+        case .canceling:
+            // Still in the process of cancelling, but is at least defintiely cancelling.
+            break
+        case .completed:
+            guard let error = task.error else {
+                XCTFail("A cancelled task should have an error if it hits completed!")
+                return
+            }
+
+            XCTAssertEqual((error as NSError).code, NSURLErrorCancelled)
+        case .running:
+            XCTFail("Cancelled task is still running!")
+        case .suspended:
+            XCTFail("Cancelled task is only suspended!")
+        }
     }
 }
