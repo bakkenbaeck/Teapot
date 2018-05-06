@@ -24,8 +24,8 @@ class TeapotTests: XCTestCase {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertNotNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
             }
 
             XCTAssertNotNil(result)
@@ -45,8 +45,8 @@ class TeapotTests: XCTestCase {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertNotNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
             }
 
             XCTAssertNotNil(result)
@@ -66,8 +66,8 @@ class TeapotTests: XCTestCase {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertNotNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
             }
 
             XCTAssertNotNil(result)
@@ -88,8 +88,8 @@ class TeapotTests: XCTestCase {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertNotNil(json)
-            case .failure(_, _, _):
-                XCTAssertTrue(false)
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
             }
 
             XCTAssertNotNil(result)
@@ -128,8 +128,8 @@ class TeapotTests: XCTestCase {
                     XCTAssertEqual(queryResult, "hello&&world")
                 }
                 break
-            case .failure:
-                XCTFail()
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
             }
 
             XCTAssertNotNil(result)
@@ -157,8 +157,8 @@ class TeapotTests: XCTestCase {
                 XCTAssertEqual(response.statusCode, 200)
                 XCTAssertEqual(image.tiffRepresentation, tiff)
                 expectation.fulfill()
-            case .failure(_, _):
-                XCTFail("Network call for image failed")
+            case .failure(_, let error):
+                XCTFail("Unexpected error: \(error)")
                 expectation.fulfill()
             }
         }
