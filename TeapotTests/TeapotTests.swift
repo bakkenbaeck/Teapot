@@ -101,7 +101,7 @@ class TeapotTests: XCTestCase {
     }
 
     func testQuery() {
-        let expectation = self.expectation(description: "Delete")
+        let expectation = self.expectation(description: "Query")
         self.teapot?.get("/get/?query=\("something")") { (result: NetworkResult) in
 
             switch result {
