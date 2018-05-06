@@ -14,8 +14,11 @@ public enum RequestParameter {
 
     public var dictionary: (Dictionary<String, Any>)? {
         switch self {
-        case .dictionary(let d):
-            return d
+        case .dictionary(let dictionary):
+            return dictionary
+        case .data(let data):
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else { return nil }
+            return json as? Dictionary<String, Any>
         default:
             return nil
         }
@@ -23,8 +26,11 @@ public enum RequestParameter {
 
     public var array: (Array<Dictionary<String, Any>>)? {
         switch self {
-        case .array(let a):
-            return a
+        case .array(let array):
+            return array
+        case .data(let data):
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else { return nil }
+            return json as? Array<Dictionary<String, Any>>
         default:
             return nil
         }
@@ -50,13 +56,6 @@ public enum RequestParameter {
     }
 
     public init(_ data: Data) {
-        let json = try? JSONSerialization.jsonObject(with: data, options: [])
-        if let array = json as? Array<Dictionary<String, Any>> {
-            self = .array(array)
-        } else if let dict = json as? Dictionary<String, Any> {
-            self = .dictionary(dict)
-        } else {
-            self = .data(data)
-        }
+        self = .data(data)
     }
 }
