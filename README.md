@@ -130,7 +130,7 @@ Teapot.localizationBundle = Bundle.myAppBundle
 
 Teapot has a simple logger that will log out certain things under the hood. This is accessible through each `Teapot`'s `logger` property.
 
-The default log level is `.none` - That is, logs will neither be generated or printed out. 
+The default log level is `.none` - That is, logs will neither be generated nor printed out. 
 
 Other log levels, in ascending order of how much log barf they fill your console with, are: 
 
