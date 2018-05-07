@@ -57,6 +57,63 @@ class TeapotTests: XCTestCase {
         self.waitForExpectations(timeout: 20.0)
     }
 
+    func testPostWithJSONData() {
+        let expectation = self.expectation(description: "Put with JSON")
+
+        let array = "[{\"foo\":\"bar\"},{\"foo\":\"baz\"}]"
+        guard let jsonData = array.data(using: .utf8) else {
+            XCTFail("Couldn't encode array string")
+            return
+        }
+
+        let param = RequestParameter(jsonData)
+
+        self.teapot?.post("/post", parameters: param) { (result) in
+            defer {
+                expectation.fulfill()
+            }
+
+            switch result {
+            case .success(let json, let response):
+                XCTAssertEqual(response.statusCode, 200)
+
+                guard let returnedData = json else {
+                    XCTFail("No data returned")
+                    return
+                }
+
+                guard let dictionary = returnedData.dictionary else {
+                    XCTFail("Returned data not of expected type")
+                    return
+                }
+
+                // Did HTTPBin get the data we sent in the same format we sent it?
+                guard
+                    let sentBackData = dictionary["data"] as? String,
+                    let encodedSentBack = sentBackData.data(using: .utf8) else {
+                        XCTFail("Sent back data not of expected type")
+                        return
+                }
+
+                XCTAssertEqual(encodedSentBack, jsonData)
+
+                // Did we send this with the appropriate header type?
+                guard let sentHeaders = dictionary["headers"] as? [String: Any] else {
+                    XCTFail("HTTPBin did not send back a copy of the headers it recieved")
+                    return
+                }
+
+                XCTAssertEqual(sentHeaders["Content-Type"] as? String, "application/json")
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+
+            XCTAssertNotNil(result)
+        }
+
+        self.waitForExpectations(timeout: 20.0)
+    }
+
     func testPut() {
         let expectation = self.expectation(description: "Put")
 
@@ -133,7 +190,6 @@ class TeapotTests: XCTestCase {
         }
 
         self.waitForExpectations(timeout: 20.0)
-
     }
 
     func testDelete() {
