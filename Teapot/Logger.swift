@@ -4,18 +4,17 @@ import Foundation
 public class Logger {
 
     public enum LogLevel: Int {
-        case
         // Logs all data sent or received to the console, including the string representation of the data which was sent or received.
-        incomingAndOutgoingData,
+        case incomingAndOutgoingData
 
         // Logs all data received to the console, including the string representation of the data which was sent.
-        incomingData,
+        case incomingData
 
         // Logs any errors to the console, including the string representation of the data which produced them.
-        error,
+        case error
 
         // Does not log anything to the console.
-        none
+        case none
     }
 
     /// The current `LogLevel` for this instance of `Logger`.
