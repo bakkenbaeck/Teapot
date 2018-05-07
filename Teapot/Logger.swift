@@ -6,10 +6,10 @@ public class Logger {
     public enum LogLevel: Int {
         case
         // Logs all data sent or received to the console, including the string representation of the data which was sent or received.
-        incomingAndOutgoing,
+        incomingAndOutgoingData,
 
         // Logs all data received to the console, including the string representation of the data which was sent.
-        incomingOnly,
+        incomingData,
 
         // Logs any errors to the console, including the string representation of the data which produced them.
         error,
@@ -20,8 +20,14 @@ public class Logger {
 
     /// The current `LogLevel` for this instance of `Logger`.
     /// NOTE: In production, you should almost certainly use `.none`, which is also the default value.
-    public var currentLevel: LogLevel = .none
+    public var currentLevel: LogLevel
 
+    /// Designated initializer.
+    ///
+    /// - Parameter level: The level to log at. Defaults to `.none`
+    public init(level: LogLevel = .none) {
+        self.currentLevel = level
+    }
 
     /// Logs an item if the log level is `incomingAndOutgoing` or higher.
     ///
@@ -32,8 +38,8 @@ public class Logger {
     ///   - date: The date this
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
-    public func incomingAndOutgoingLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return log(level: .incomingAndOutgoing, items: items, file: file, line: line, at: date)
+    public func incomingAndOutgoingDataLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
+        return log(level: .incomingAndOutgoingData, items: items, file: file, line: line, at: date)
     }
 
     /// Logs an item if the log level is `incomingOnly` or higher.
@@ -45,8 +51,8 @@ public class Logger {
     ///   - date: The date this
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
-    public func incomingOnlyLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return log(level: .incomingOnly, items: items, file: file, line: line, at: date)
+    public func incomingDataLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
+        return log(level: .incomingData, items: items, file: file, line: line, at: date)
     }
 
     /// Logs an item if the log level is `error` or higher.

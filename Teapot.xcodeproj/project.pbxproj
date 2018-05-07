@@ -11,6 +11,7 @@
 		3363877220A07950009A7B26 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363877020A075C6009A7B26 /* Logger.swift */; };
 		3363877420A08259009A7B26 /* URLResponse+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363877320A08259009A7B26 /* URLResponse+Convenience.swift */; };
 		3363877520A082C5009A7B26 /* URLResponse+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363877320A08259009A7B26 /* URLResponse+Convenience.swift */; };
+		3363877720A08D26009A7B26 /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363877620A08D26009A7B26 /* LoggerTests.swift */; };
 		9F1D8B751E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1D8B741E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift */; };
 		9F2C23601FE8034100644152 /* Teapot+BasicAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2C235F1FE8034100644152 /* Teapot+BasicAuth.swift */; };
 		9F2C23611FE8034100644152 /* Teapot+BasicAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2C235F1FE8034100644152 /* Teapot+BasicAuth.swift */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		3363877020A075C6009A7B26 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		3363877320A08259009A7B26 /* URLResponse+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLResponse+Convenience.swift"; sourceTree = "<group>"; };
+		3363877620A08D26009A7B26 /* LoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTests.swift; sourceTree = "<group>"; };
 		9F1D8B741E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Teapot+iOSMultipartDataForImage.swift"; sourceTree = "<group>"; };
 		9F2C235F1FE8034100644152 /* Teapot+BasicAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Teapot+BasicAuth.swift"; sourceTree = "<group>"; };
 		9F2C23621FE8078000644152 /* BasicAuthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAuthTests.swift; sourceTree = "<group>"; };
@@ -145,11 +147,12 @@
 			isa = PBXGroup;
 			children = (
 				9F7B89711E51E03C009C192E /* app-draw-icon.png */,
-				9FED00D51E3A4EDA009A54B4 /* TeapotTests.swift */,
-				9FB36EA31E7BE95900DB6F86 /* ResponseTests.swift */,
 				9F2C23621FE8078000644152 /* BasicAuthTests.swift */,
-				9FED00D71E3A4EDA009A54B4 /* Info.plist */,
 				D197BA0495D1052C8D29FD8A /* MockTests.swift */,
+				3363877620A08D26009A7B26 /* LoggerTests.swift */,
+				9FB36EA31E7BE95900DB6F86 /* ResponseTests.swift */,
+				9FED00D51E3A4EDA009A54B4 /* TeapotTests.swift */,
+				9FED00D71E3A4EDA009A54B4 /* Info.plist */,
 				D197B92809E03181E7EF7AA1 /* get.json */,
 				D197B578CBCD1E73B2CAD236 /* invalid.json */,
 				D197BCF4092AC0C96E78327E /* overridden.json */,
@@ -342,6 +345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3363877720A08D26009A7B26 /* LoggerTests.swift in Sources */,
 				9FED00D61E3A4EDA009A54B4 /* TeapotTests.swift in Sources */,
 				9FB36EA41E7BE95900DB6F86 /* ResponseTests.swift in Sources */,
 				9F2C23631FE8078000644152 /* BasicAuthTests.swift in Sources */,

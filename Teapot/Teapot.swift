@@ -262,7 +262,7 @@ open class Teapot {
             request.httpBody = parameters.data
         }
 
-        logger.incomingAndOutgoingLog("""
+        logger.incomingAndOutgoingDataLog("""
 
             ||
             || TEAPOT - OUTGOING REQUEST

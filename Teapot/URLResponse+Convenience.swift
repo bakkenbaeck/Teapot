@@ -6,7 +6,7 @@ extension URLResponse {
         return self as! HTTPURLResponse
     }
 
-    var statusCode: Int {
+    var httpStatusCode: Int {
         return self.asHTTP.statusCode
     }
 
@@ -40,7 +40,7 @@ extension URLResponse {
                 ||
                 || TEAPOT - RECIEVED ERROR
                 ||
-                || HTTP status code: \(response.statusCode)
+                || HTTP status code: \(response.httpStatusCode)
                 ||
                 || Error:
                 || \t\(receivedError)
@@ -53,12 +53,12 @@ extension URLResponse {
 
                 """)
         } else {
-            logger.incomingOnlyLog("""
+            logger.incomingDataLog("""
 
                 ||
                 || TEAPOT - RECIEVED DATA
                 ||
-                || HTTP status code: \(response.statusCode)
+                || HTTP status code: \(response.httpStatusCode)
                 ||
                 || Headers:
                 || \t\(Logger.logHeaderString(from: response))
