@@ -83,7 +83,7 @@ class TeapotTests: XCTestCase {
 
         let dict = "{\"foo\":\"bar\"}"
         guard let jsonData = dict.data(using: .utf8) else {
-            XCTFail("Couldn't incode dic string")
+            XCTFail("Couldn't encode dictionary string")
             return
         }
 
