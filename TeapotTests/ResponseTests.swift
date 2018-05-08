@@ -2,14 +2,16 @@ import XCTest
 @testable import TeapotMac
 
 class ResponseTests: XCTestCase {
+    
     func testFromArray() {
-        let ary: [[String: Any]] = [["test" : 1]]
-        let data = try! JSONSerialization.data(withJSONObject: ary, options: [])
-        let json = RequestParameter(ary)
+        let array: [[String: Any]] = [["test" : 1]]
+        let data = try! JSONSerialization.data(withJSONObject: array, options: [])
+        let json = RequestParameter(array)
 
-        XCTAssertNotNil(json.array)
-        XCTAssertNotNil(json.data)
         XCTAssertNil(json.dictionary)
+        XCTAssertNotNil(json.array)
+        XCTAssertEqual(json.array?.count, 1)
+        XCTAssertNotNil(json.data)
         XCTAssertEqual(json.data, data)
     }
 
@@ -19,8 +21,10 @@ class ResponseTests: XCTestCase {
         let json = RequestParameter(dict)
 
         XCTAssertNil(json.array)
-        XCTAssertNotNil(json.data)
         XCTAssertNotNil(json.dictionary)
+        XCTAssertEqual(json.dictionary?["test"] as? Int, 1)
+
+        XCTAssertNotNil(json.data)
         XCTAssertEqual(json.data, data)
     }
 
@@ -39,11 +43,11 @@ class ResponseTests: XCTestCase {
         let json = RequestParameter(data)
 
         XCTAssertNil(json.dictionary)
-        XCTAssertNotNil(json.data)
+
         XCTAssertNotNil(json.array)
-        // internal data uses [] for dicts as well as arrays, so:
-        XCTAssertNotEqual(json.data, data)
-        // but length should still match
-        XCTAssertEqual(json.data?.count, data.count)
+        XCTAssertEqual(json.array?.count, 1)
+
+        XCTAssertNotNil(json.data)
+        XCTAssertEqual(json.data, data)
     }
 }
