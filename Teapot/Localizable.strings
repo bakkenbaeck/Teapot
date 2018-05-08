@@ -1,4 +1,5 @@
 "teapot_data_task_error" = "An error occurred: data task error occurred: %@.";
+"teapot_no_response_received" = "No response received from server.";
 "teapot_invalid_request_path" = "An error occurred: request URL path is invalid.";
 "teapot_missing_image" = "An error occurred: image is missing.";
 "teapot_invalid_response_status" = "An error occurred: request response status reported an issue. Status code: %d.";
