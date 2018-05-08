@@ -37,6 +37,12 @@ public struct TeapotError: Error, CustomStringConvertible {
         return TeapotError(withType: .incorrectHeaders, description: errorDescription)
     }
 
+    static func noResponse(withUnderlyingError error: Error?) -> TeapotError {
+        let errorDescription = String(format: NSLocalizedString("teapot_no_response_received", bundle: Teapot.localizationBundle, comment: ""))
+
+        return TeapotError(withType: .noResponse, description: errorDescription, underlyingError: error)
+    }
+
     public enum ErrorType: Int {
         case dataTaskError
         case invalidPayload
@@ -46,6 +52,7 @@ public struct TeapotError: Error, CustomStringConvertible {
         case missingMockFile
         case invalidMockFile
         case incorrectHeaders
+        case noResponse
     }
 
     public let responseStatus: Int?

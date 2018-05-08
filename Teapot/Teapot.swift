@@ -243,7 +243,13 @@ open class Teapot {
 
     func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
         let task = self.session.dataTask(with: request) { data, response, error in
-            guard let response = response else { return }
+            guard let response = response else {
+                let teapotError = TeapotError.noResponse(withUnderlyingError: error)
+                let fakeResponse = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
+                let errorResult = NetworkResult(nil, fakeResponse, teapotError)
+                completion(errorResult)
+                return
+            }
 
             var json: RequestParameter?
             if let data = data, let deserialised = try? JSONSerialization.jsonObject(with: data, options: []) {
