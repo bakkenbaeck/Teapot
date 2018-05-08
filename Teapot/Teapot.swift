@@ -244,6 +244,13 @@ open class Teapot {
     func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
         let task = self.session.dataTask(with: request) { data, response, error in
             guard let response = response else {
+                if let error = error {
+                    guard (error as NSError).code != NSURLErrorCancelled else {
+                        // This request was cancelled, do not actually fire the completion block.
+                        return
+                    }
+                }
+
                 let teapotError = TeapotError.noResponse(withUnderlyingError: error)
                 let fakeResponse = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
                 let errorResult = NetworkResult(nil, fakeResponse, teapotError)
