@@ -292,7 +292,7 @@ open class Teapot {
                 }
 
                 let teapotError = TeapotError.noResponse(withUnderlyingError: error)
-                let errorResponse = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
+                let errorResponse = HTTPURLResponse(url: request.url!, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
                 let errorResult = NetworkResult(nil, errorResponse, teapotError)
                 completion(errorResult)
                 
