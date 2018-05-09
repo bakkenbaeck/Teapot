@@ -280,9 +280,24 @@ open class Teapot {
 
 
     func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
-        let task = self.session.dataTask(with: request) {  [weak self] data, response, error in
+        let task = self.session.dataTask(with: request) { [weak self] data, response, error in
             URLResponse.log(using: self?.logger, data, response, error)
-            guard let response = response else { return }
+
+            guard let response = response else {
+                if let error = error {
+                    guard (error as NSError).code != NSURLErrorCancelled else {
+                        // This request was cancelled, do not actually fire the completion block.
+                        return
+                    }
+                }
+
+                let teapotError = TeapotError.noResponse(withUnderlyingError: error)
+                let errorResponse = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
+                let errorResult = NetworkResult(nil, errorResponse, teapotError)
+                completion(errorResult)
+                
+                return
+            }
 
             var json: RequestParameter?
             if let data = data, let deserialised = try? JSONSerialization.jsonObject(with: data, options: []) {
