@@ -67,7 +67,7 @@ class MockTests: XCTestCase {
     func testUnauthorizedError() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get", statusCode: .unauthorized)
         
-        mockedTeapot.get("/get") { (result: NetworkResult) in
+        mockedTeapot.get("/get") { result in
             switch result {
             case .success:
                 XCTFail()
@@ -81,7 +81,7 @@ class MockTests: XCTestCase {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get")
         mockedTeapot.overrideEndPoint("overridden", withFilename: "overridden")
 
-        mockedTeapot.get("/overridden") { (result: NetworkResult) in
+        mockedTeapot.get("/overridden") { result in
             switch result {
             case .success(let json, _):
                 XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")

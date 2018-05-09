@@ -37,6 +37,8 @@ open class Teapot {
 
     open var baseURL: URL
 
+    open var logger = Logger()
+
     // MARK: - Initialiser
 
     public init(baseURL: URL) {
@@ -207,13 +209,35 @@ open class Teapot {
         guard var baseComponents = URLComponents(url: self.baseURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
 
         if let path = path, let pathURL = URL(string: path) {
-            guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else { throw TeapotError.invalidRequestPath }
+            guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else {
+                self.logger.errorLog("""
+
+                    ||
+                    || TEAPOT - REQUEST CONSTRUCTION ERROR
+                    || Could not get components for path \"\(String(describing: path))\"
+                    ||
+
+                    """)
+
+                throw TeapotError.invalidRequestPath
+            }
 
             baseComponents.path = pathComponents.path
             baseComponents.percentEncodedQuery = pathComponents.percentEncodedQuery
         }
 
-        guard let url = baseComponents.url else { throw TeapotError.invalidRequestPath }
+        guard let url = baseComponents.url else {
+            self.logger.errorLog("""
+
+                ||
+                || TEAPOT - REQUEST CONSTRUCTION ERROR
+                || Could not get URL from components: \(baseComponents)
+                ||
+
+                """)
+
+            throw TeapotError.invalidRequestPath
+        }
 
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: timeoutInterval)
         request.allowsCellularAccess = allowsCellular
@@ -238,11 +262,27 @@ open class Teapot {
             request.httpBody = parameters.data
         }
 
+        logger.incomingAndOutgoingDataLog("""
+
+            ||
+            || TEAPOT - OUTGOING REQUEST
+            || Headers:
+            || \(String(describing: request.allHTTPHeaderFields))
+            ||
+            || Contents:
+            || \(Logger.logString(from: request.httpBody))
+            ||
+
+            """)
         return request
     }
 
+
+
     func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
-        let task = self.session.dataTask(with: request) { data, response, error in
+        let task = self.session.dataTask(with: request) { [weak self] data, response, error in
+            URLResponse.log(using: self?.logger, data, response, error)
+
             guard let response = response else {
                 if let error = error {
                     guard (error as NSError).code != NSURLErrorCancelled else {
@@ -252,7 +292,7 @@ open class Teapot {
                 }
 
                 let teapotError = TeapotError.noResponse(withUnderlyingError: error)
-                let errorResponse = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
+                let errorResponse = HTTPURLResponse(url: request.url!, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
                 let errorResult = NetworkResult(nil, errorResponse, teapotError)
                 completion(errorResult)
                 
@@ -284,9 +324,10 @@ open class Teapot {
     }
 
     func runTask(with request: URLRequest, completion: @escaping ((NetworkImageResult) -> Void)) -> URLSessionTask {
-        let task = self.session.dataTask(with: request) { data, response, error in
+        let task = self.session.dataTask(with: request) { [weak self] data, response, error in
+            URLResponse.log(using: self?.logger, data, response, error)
             guard let response = response else {
-                NSLog(error?.localizedDescription ?? "Fatal error with request: \(request).")
+                NSLog(error?.localizedDescription ?? "Major error with request: \(request).")
 
                 return
             }

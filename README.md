@@ -126,6 +126,20 @@ You can replace it with your own file, implementing those keys and set it global
 Teapot.localizationBundle = Bundle.myAppBundle
 ```
 
+## Logging
+
+Teapot has a simple logger that will log out certain things under the hood. This is accessible through each `Teapot`'s `logger` property.
+
+The default log level is `.none` - That is, logs will neither be generated nor printed out. 
+
+Other log levels, in ascending order of how much log barf they fill your console with, are: 
+
+- `error` - Logs any error which occurs at the `Teapot` level. 
+- `incomingData` - Logs data received from a server
+- `incomingAndOutgoingData` - Logs data both recieved from a server and being sent to a server. 
+
+Log levels are ascending: If you set a `logger`'s log level to `incomingData`, both `incomingData` level logs and `error` level logs will print out. 
+
 ## Mocking 
 
 To mock network calls for testing, you can use a `MockTeapot` instead of a standard `Teapot`. This allows you to return the contents of a file when the `MockTeapot` instance is next used. For example: 

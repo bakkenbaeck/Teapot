@@ -19,7 +19,7 @@ class TeapotTests: XCTestCase {
     func testGet() {
         let expectation = self.expectation(description: "Get")
 
-        self.teapot?.get("/get") { (result: NetworkResult) in
+        self.teapot?.get("/get") { result in
             switch result {
             case .success(let json, let response):
                 XCTAssertEqual(response.statusCode, 200)
@@ -39,7 +39,7 @@ class TeapotTests: XCTestCase {
     func testPost() {
         let expectation = self.expectation(description: "Post")
 
-        self.teapot?.post("/post") { (result) in
+        self.teapot?.post("/post") { result in
 
             switch result {
             case .success(let json, let response):
