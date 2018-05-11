@@ -231,4 +231,54 @@ class MockTests: XCTestCase {
             }
         }
     }
+
+    func testExpectedHeadersAreNotCheckedForEndpointOverrideButAreForMainRequest() {
+        let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get")
+
+        let expectedHeaders = [
+            "foo": "bar",
+            "baz": "foo2",
+            ]
+
+        mockedTeapot.setExpectedHeaders(expectedHeaders)
+
+        // If you don't pass the expected headers to the overridden endpoint but do
+        // pass them to the final endpoint, this should succeed.
+        mockedTeapot.overrideEndPoint("overridden", withFilename: "overridden")
+
+        mockedTeapot.get("/overridden") { result in
+            switch result {
+            case .success(let json, _):
+                XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")
+                mockedTeapot.get("/get", headerFields: expectedHeaders) { result in
+                    switch result {
+                    case .success(let json, _):
+                        XCTAssertEqual(json?.dictionary?["key"] as? String, "value")
+                    case .failure(_, _, let error):
+                        XCTFail("Unexpected error hitting primary endpoint: \(error)")
+                    }
+                }
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error hitting overridden endpoint: \(error)")
+            }
+        }
+
+        // If you don't pass the expected headers to the overridden getter OR to the main get method, then this should fail.
+        mockedTeapot.get("/overridden") { result in
+            switch result {
+            case .success(let json, _):
+                XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")
+                mockedTeapot.get("/get") { result in
+                    switch result {
+                    case .success:
+                        XCTFail("Unexpected success when not passing correct headers!")
+                    case .failure(_, _, let error):
+                        XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: nil))
+                    }
+                }
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error hitting overridden endpoint: \(error)")
+            }
+        }
+    }
 }
