@@ -6,7 +6,7 @@ class MockTests: XCTestCase {
     func testMock() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get")
 
-        mockedTeapot.get("/get") { (result: NetworkResult) in
+        mockedTeapot.get("/get") { result in
             switch result {            
             case .success(let json, _):
                 XCTAssertEqual(json?.dictionary?["key"] as? String, "value")
@@ -19,7 +19,7 @@ class MockTests: XCTestCase {
     func testMissingMock() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "missing")
 
-        mockedTeapot.get("/missing") { (result: NetworkResult) in
+        mockedTeapot.get("/missing") { result in
             switch result {
             case .success:
                 XCTFail()
@@ -37,7 +37,7 @@ class MockTests: XCTestCase {
     func testInvalidMock() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "invalid")
 
-        mockedTeapot.get("/invalid") { (result: NetworkResult) in
+        mockedTeapot.get("/invalid") { result in
             switch result {
             case .success:
                 XCTFail()
@@ -54,7 +54,7 @@ class MockTests: XCTestCase {
 
     func testNoContent() {
         let mockedTeapot = MockTeapot(bundle: Bundle(for: MockTests.self), mockFilename: "get", statusCode: .noContent)
-        mockedTeapot.get("/get") { (result: NetworkResult) in
+        mockedTeapot.get("/get") { result in
             switch result {
             case .success(_, let response):
                 XCTAssertEqual(response.statusCode, 204)
@@ -166,7 +166,8 @@ class MockTests: XCTestCase {
 
         mockedTeapot.setExpectedHeaders(expectedHeaders)
 
-        mockedTeapot.get("/get", headerFields: [ "foo" : "bar" ]) { result in
+        let wrongHeaders = [ "foo" : "bar" ]
+        mockedTeapot.get("/get", headerFields: wrongHeaders) { result in
             switch result {
             case .success:
                 XCTFail("Request suceceeded which should not have!")
@@ -210,8 +211,9 @@ class MockTests: XCTestCase {
 
         mockedTeapot.setExpectedHeaders(expectedHeaders)
 
-        mockedTeapot.get("/get", headerFields: [ "foo" : "bar" ]) { result in
-            switch result {
+        let wrongHeaders = [ "foo" : "bar" ]
+        mockedTeapot.get("/get", headerFields: wrongHeaders) { wrongHeaderResult in
+            switch wrongHeaderResult {
             case .success:
                 XCTFail("Request suceceeded which should not have!")
             case .failure(_, let response, let error):
@@ -222,8 +224,8 @@ class MockTests: XCTestCase {
 
         mockedTeapot.clearExpectedHeaders()
 
-        mockedTeapot.get("/get") { result in
-            switch result {
+        mockedTeapot.get("/get") { clearedHeaderResult in
+            switch clearedHeaderResult {
             case .success(let json, _):
                 XCTAssertEqual(json?.dictionary?["key"] as? String, "value")
             case .failure(_, _, let error):
@@ -246,12 +248,12 @@ class MockTests: XCTestCase {
         // pass them to the final endpoint, this should succeed.
         mockedTeapot.overrideEndPoint("overridden", withFilename: "overridden")
 
-        mockedTeapot.get("/overridden") { result in
-            switch result {
+        mockedTeapot.get("/overridden") { firstOverriddenResult in
+            switch firstOverriddenResult {
             case .success(let json, _):
                 XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")
-                mockedTeapot.get("/get", headerFields: expectedHeaders) { result in
-                    switch result {
+                mockedTeapot.get("/get", headerFields: expectedHeaders) { firstGetResult in
+                    switch firstGetResult {
                     case .success(let json, _):
                         XCTAssertEqual(json?.dictionary?["key"] as? String, "value")
                     case .failure(_, _, let error):
@@ -264,12 +266,12 @@ class MockTests: XCTestCase {
         }
 
         // If you don't pass the expected headers to the overridden getter OR to the main get method, then this should fail.
-        mockedTeapot.get("/overridden") { result in
-            switch result {
+        mockedTeapot.get("/overridden") { secondOverriddenResult in
+            switch secondOverriddenResult {
             case .success(let json, _):
                 XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")
-                mockedTeapot.get("/get") { result in
-                    switch result {
+                mockedTeapot.get("/get") { secondGetResult in
+                    switch secondGetResult {
                     case .success:
                         XCTFail("Unexpected success when not passing correct headers!")
                     case .failure(_, _, let error):
