@@ -10,8 +10,8 @@ class MockTests: XCTestCase {
             switch result {            
             case .success(let json, _):
                 XCTAssertEqual(json?.dictionary?["key"] as? String, "value")
-            case .failure:
-                XCTFail()
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error getting mock: \(error)")
             }
         }
     }
@@ -28,7 +28,7 @@ class MockTests: XCTestCase {
                     case .missingMockFile:
                         XCTAssertEqual(error.description, "An error occurred: expected mockfile with name: missing.json")
                     default:
-                        XCTFail()
+                        XCTFail("Incorrect error for missing mock: \(error)")
                 }
             }
         }
@@ -46,7 +46,7 @@ class MockTests: XCTestCase {
                 case .invalidMockFile:
                     XCTAssertEqual(error.description, "An error occurred: invalid mockfile with name: invalid.json")
                 default:
-                    XCTFail()
+                    XCTFail("Incorrect error for invalid file: \(error)")
                 }
             }
         }
@@ -59,7 +59,7 @@ class MockTests: XCTestCase {
             case .success(_, let response):
                 XCTAssertEqual(response.statusCode, 204)
             case .failure:
-                XCTFail()
+                XCTFail("Incorrect status code returned for no content")
             }
         }
     }
@@ -86,8 +86,7 @@ class MockTests: XCTestCase {
             case .success(let json, _):
                 XCTAssertEqual(json?.dictionary?["overridden"] as? String, "value")
             case .failure(let error):
-                print(error)
-                XCTFail()
+                XCTFail("Unexpected error overriding endpoint: \(error)")
             }
         }
     }
@@ -151,7 +150,7 @@ class MockTests: XCTestCase {
                 XCTFail("Request suceceeded which should not have!")
             case .failure(_, let response, let error):
                 XCTAssertEqual(response.statusCode, 400)
-                XCTAssertEqual(error.type, .incorrectHeaders)
+                XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: nil))
             }
         }
     }
@@ -173,7 +172,7 @@ class MockTests: XCTestCase {
                 XCTFail("Request suceceeded which should not have!")
             case .failure(_, let response, let error):
                 XCTAssertEqual(response.statusCode, 400)
-                XCTAssertEqual(error.type, .incorrectHeaders)
+                XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: wrongHeaders))
             }
         }
     }
@@ -218,7 +217,7 @@ class MockTests: XCTestCase {
                 XCTFail("Request suceceeded which should not have!")
             case .failure(_, let response, let error):
                 XCTAssertEqual(response.statusCode, 400)
-                XCTAssertEqual(error.type, .incorrectHeaders)
+                XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: wrongHeaders))
             }
         }
 
@@ -240,7 +239,7 @@ class MockTests: XCTestCase {
         let expectedHeaders = [
             "foo": "bar",
             "baz": "foo2",
-            ]
+        ]
 
         mockedTeapot.setExpectedHeaders(expectedHeaders)
 
