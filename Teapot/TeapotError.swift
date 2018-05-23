@@ -69,3 +69,13 @@ public struct TeapotError: Error, CustomStringConvertible {
         self.underlyingError = underlyingError
     }
 }
+
+extension TeapotError: Equatable {
+
+    public static func ==(lhs: TeapotError, rhs: TeapotError) -> Bool {
+        return lhs.type == rhs.type
+            && lhs.description == rhs.description
+            && lhs.responseStatus == rhs.responseStatus
+            && (lhs.underlyingError as NSError?) == (rhs.underlyingError as NSError?)
+    }
+}
