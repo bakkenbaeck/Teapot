@@ -1,10 +1,9 @@
-import XCTest
 @testable import TeapotMac
+import XCTest
 
 class ResponseTests: XCTestCase {
-    
     func testFromArray() {
-        let array: [[String: Any]] = [["test" : 1]]
+        let array: [[String: Any]] = [["test": 1]]
         let data = try! JSONSerialization.data(withJSONObject: array, options: [])
         let json = RequestParameter(array)
 
@@ -16,7 +15,7 @@ class ResponseTests: XCTestCase {
     }
 
     func testFromDict() {
-        let dict: [String: Any] = ["test" : 1]
+        let dict: [String: Any] = ["test": 1]
         let data = try! JSONSerialization.data(withJSONObject: dict, options: [])
         let json = RequestParameter(dict)
 

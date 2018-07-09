@@ -20,14 +20,14 @@ public struct TeapotError: Error, CustomStringConvertible {
     }
 
     static func missingMockFile(_ fileName: String) -> TeapotError {
-        let errorDescription =  String(format: NSLocalizedString("mockteapot_missing_mock_file", bundle: Teapot.localizationBundle, comment: ""),  fileName)
+        let errorDescription = String(format: NSLocalizedString("mockteapot_missing_mock_file", bundle: Teapot.localizationBundle, comment: ""), fileName)
 
         return TeapotError(withType: .missingMockFile, description: errorDescription)
     }
 
     static func invalidMockFile(_ fileName: String) -> TeapotError {
-        let errorDescription =  String(format: NSLocalizedString("mockteapot_invalid_mock_file", bundle: Teapot.localizationBundle, comment: ""), fileName)
-        
+        let errorDescription = String(format: NSLocalizedString("mockteapot_invalid_mock_file", bundle: Teapot.localizationBundle, comment: ""), fileName)
+
         return TeapotError(withType: .invalidMockFile, description: errorDescription)
     }
 
@@ -62,7 +62,6 @@ public struct TeapotError: Error, CustomStringConvertible {
     public var description: String
 
     public init(withType type: ErrorType, description: String, responseStatus: Int? = nil, underlyingError: Error? = nil) {
-        
         self.type = type
         self.description = description
         self.responseStatus = responseStatus
@@ -71,8 +70,7 @@ public struct TeapotError: Error, CustomStringConvertible {
 }
 
 extension TeapotError: Equatable {
-
-    public static func ==(lhs: TeapotError, rhs: TeapotError) -> Bool {
+    public static func == (lhs: TeapotError, rhs: TeapotError) -> Bool {
         return lhs.type == rhs.type
             && lhs.description == rhs.description
             && lhs.responseStatus == rhs.responseStatus

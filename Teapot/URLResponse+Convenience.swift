@@ -1,7 +1,6 @@
 import Foundation
 
 extension URLResponse {
-
     var asHTTP: HTTPURLResponse {
         return self as! HTTPURLResponse
     }
@@ -23,35 +22,35 @@ extension URLResponse {
         guard let response = response else {
             logger.errorLog("""
 
-                ||
-                || TEAPOT - NO RESPONSE
-                ||
-                || Error:
-                || \t\(String(describing: error))
-                ||
+            ||
+            || TEAPOT - NO RESPONSE
+            ||
+            || Error:
+            || \t\(String(describing: error))
+            ||
 
-                """)
+            """)
             return
         }
 
         if let receivedError = error {
             logger.errorLog("""
 
-                ||
-                || TEAPOT - RECIEVED ERROR
-                ||
-                || HTTP status code: \(response.httpStatusCode)
-                ||
-                || Error:
-                || \t\(receivedError)
-                ||
-                || Headers:
-                || \t\(Logger.logHeaderString(from: response))
-                ||
-                || Contents:
-                || \t\(Logger.logString(from: data))
+            ||
+            || TEAPOT - RECIEVED ERROR
+            ||
+            || HTTP status code: \(response.httpStatusCode)
+            ||
+            || Error:
+            || \t\(receivedError)
+            ||
+            || Headers:
+            || \t\(Logger.logHeaderString(from: response))
+            ||
+            || Contents:
+            || \t\(Logger.logString(from: data))
 
-                """)
+            """)
         } else {
             logger.incomingDataLog("""
 

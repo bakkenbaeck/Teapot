@@ -1,47 +1,44 @@
-import XCTest
 import TeapotMac
+import XCTest
 
 class LoggerTests: XCTestCase {
-
     private lazy var logger = Logger()
 
     func testDefaultConstructorPrintsNothing() {
-
-        XCTAssertFalse(logger.errorLog("Did this error log print?"))
-        XCTAssertFalse(logger.incomingDataLog("Did this incoming only log print?"))
-        XCTAssertFalse(logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
+        XCTAssertFalse(self.logger.errorLog("Did this error log print?"))
+        XCTAssertFalse(self.logger.incomingDataLog("Did this incoming only log print?"))
+        XCTAssertFalse(self.logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
     }
 
     func testNonePrintsNothing() {
-        logger.currentLevel = .none
+        self.logger.currentLevel = .none
 
-        XCTAssertFalse(logger.errorLog("Did this error log print?"))
-        XCTAssertFalse(logger.incomingDataLog("Did this incoming only log print?"))
-        XCTAssertFalse(logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
+        XCTAssertFalse(self.logger.errorLog("Did this error log print?"))
+        XCTAssertFalse(self.logger.incomingDataLog("Did this incoming only log print?"))
+        XCTAssertFalse(self.logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
     }
 
     func testErrorOnlyPrintsErrors() {
-        logger.currentLevel = .error
+        self.logger.currentLevel = .error
 
-        XCTAssertTrue(logger.errorLog("Did this error log print?"))
-        XCTAssertFalse(logger.incomingDataLog("Did this incoming only log print?"))
-        XCTAssertFalse(logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
+        XCTAssertTrue(self.logger.errorLog("Did this error log print?"))
+        XCTAssertFalse(self.logger.incomingDataLog("Did this incoming only log print?"))
+        XCTAssertFalse(self.logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
     }
 
     func testIncomingPrintsIncomingAndErrors() {
-        logger.currentLevel = .incomingData
+        self.logger.currentLevel = .incomingData
 
-        XCTAssertTrue(logger.errorLog("Did this error log print?"))
-        XCTAssertTrue(logger.incomingDataLog("Did this incoming only log print?"))
-        XCTAssertFalse(logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
-
+        XCTAssertTrue(self.logger.errorLog("Did this error log print?"))
+        XCTAssertTrue(self.logger.incomingDataLog("Did this incoming only log print?"))
+        XCTAssertFalse(self.logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
     }
 
     func testIncomingOutgoingPrintsEverything() {
-        logger.currentLevel = .incomingAndOutgoingData
+        self.logger.currentLevel = .incomingAndOutgoingData
 
-        XCTAssertTrue(logger.errorLog("Did this error log print?"))
-        XCTAssertTrue(logger.incomingDataLog("Did this incoming only log print?"))
-        XCTAssertTrue(logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
+        XCTAssertTrue(self.logger.errorLog("Did this error log print?"))
+        XCTAssertTrue(self.logger.incomingDataLog("Did this incoming only log print?"))
+        XCTAssertTrue(self.logger.incomingAndOutgoingDataLog("Did this incoming and outgoing log print?"))
     }
 }

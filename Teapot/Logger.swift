@@ -2,7 +2,6 @@ import Foundation
 
 /// Wrapper for logs which can be toggled on and off to increase or decrease the amount of log barf you wish to see.
 public class Logger {
-
     public enum LogLevel: Int {
         // Logs all data sent or received to the console, including the string representation of the data which was sent or received.
         case incomingAndOutgoingData
@@ -38,7 +37,7 @@ public class Logger {
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
     public func incomingAndOutgoingDataLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return log(level: .incomingAndOutgoingData, items: items, file: file, line: line, at: date)
+        return self.log(level: .incomingAndOutgoingData, items: items, file: file, line: line, at: date)
     }
 
     /// Logs an item if the log level is `incomingOnly` or higher.
@@ -51,7 +50,7 @@ public class Logger {
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
     public func incomingDataLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return log(level: .incomingData, items: items, file: file, line: line, at: date)
+        return self.log(level: .incomingData, items: items, file: file, line: line, at: date)
     }
 
     /// Logs an item if the log level is `error` or higher.
@@ -64,11 +63,11 @@ public class Logger {
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
     public func errorLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return log(level: .error, items: items, file: file, line: line, at: date)
+        return self.log(level: .error, items: items, file: file, line: line, at: date)
     }
 
     private func log(level: LogLevel, items: @autoclosure () -> String, file: StaticString, line: UInt, at date: Date) -> Bool {
-        guard level.rawValue >= currentLevel.rawValue else {
+        guard level.rawValue >= self.currentLevel.rawValue else {
             // We don't want to print anything at a level lower than the current log level.
             return false
         }
@@ -96,7 +95,7 @@ public class Logger {
     /// - Returns: The formatted string.
     public static func logHeaderString(from response: URLResponse?) -> String {
         guard let response = response else { return "[no response received]" }
-        
+
         guard !response.allHeaderFields.isEmpty else { return "[no headers available]" }
 
         let headerStrings = response.allHeaderFields.map { "\($0): \($1)" }

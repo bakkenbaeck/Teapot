@@ -1,8 +1,7 @@
-import XCTest
 @testable import TeapotMac
+import XCTest
 
 class TeapotTests: XCTestCase {
-
     var teapot: Teapot?
 
     override func setUp() {
@@ -10,12 +9,12 @@ class TeapotTests: XCTestCase {
 
         self.teapot = Teapot(baseURL: URL(string: "https://httpbin.org")!)
     }
-    
+
     override func tearDown() {
         self.teapot = nil
         super.tearDown()
     }
-    
+
     func testGet() {
         let expectation = self.expectation(description: "Get")
 
@@ -68,7 +67,7 @@ class TeapotTests: XCTestCase {
 
         let param = RequestParameter(jsonData)
 
-        self.teapot?.post("/post", parameters: param) { (result) in
+        self.teapot?.post("/post", parameters: param) { result in
             defer {
                 expectation.fulfill()
             }
@@ -91,8 +90,8 @@ class TeapotTests: XCTestCase {
                 guard
                     let sentBackData = dictionary["data"] as? String,
                     let encodedSentBack = sentBackData.data(using: .utf8) else {
-                        XCTFail("Sent back data not of expected type")
-                        return
+                    XCTFail("Sent back data not of expected type")
+                    return
                 }
 
                 XCTAssertEqual(encodedSentBack, jsonData)
@@ -117,7 +116,7 @@ class TeapotTests: XCTestCase {
     func testPut() {
         let expectation = self.expectation(description: "Put")
 
-        self.teapot?.put("/put") { (result) in
+        self.teapot?.put("/put") { result in
 
             switch result {
             case .success(let json, let response):
@@ -146,7 +145,7 @@ class TeapotTests: XCTestCase {
 
         let param = RequestParameter(jsonData)
 
-        self.teapot?.put("/put", parameters: param) { (result) in
+        self.teapot?.put("/put", parameters: param) { result in
             defer {
                 expectation.fulfill()
             }
@@ -196,7 +195,7 @@ class TeapotTests: XCTestCase {
         let expectation = self.expectation(description: "Delete")
 
         // pass
-        self.teapot?.delete("/delete") { (result) in
+        self.teapot?.delete("/delete") { result in
 
             switch result {
             case .success(let json, let response):
@@ -219,7 +218,7 @@ class TeapotTests: XCTestCase {
         self.teapot?.get("/get/?query=\("something")") { (result: NetworkResult) in
 
             switch result {
-            case .success(_, _):
+            case .success:
                 break
             case .failure(_, let response, _):
                 XCTAssertEqual(response.statusCode, 404)
@@ -257,15 +256,15 @@ class TeapotTests: XCTestCase {
         let expectation = self.expectation(description: "GetImage")
         let url = URL(string: "http://icons.iconarchive.com/icons/martz90/circle/512/app-draw-icon.png")!
 
-        Teapot(baseURL: url).get() { (result: NetworkImageResult) in
+        Teapot(baseURL: url).get { (result: NetworkImageResult) in
             switch result {
             case .success(let image, let response):
                 guard
                     let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name(rawValue: "app-draw-icon")),
                     let tiff = localImage.tiffRepresentation else {
-                        XCTFail("Could not create local image TIFF")
-                        expectation.fulfill()
-                        return
+                    XCTFail("Could not create local image TIFF")
+                    expectation.fulfill()
+                    return
                 }
 
                 XCTAssertEqual(response.statusCode, 200)
@@ -284,7 +283,7 @@ class TeapotTests: XCTestCase {
         let invertedExpecation = expectation(description: "Request completed")
         invertedExpecation.isInverted = true
 
-        guard let task = self.teapot?.get("/get", completion: { (result: NetworkResult) in
+        guard let task = self.teapot?.get("/get", completion: { (_: NetworkResult) in
             // This should not happen, so we fulfill the inverted expectation
             invertedExpecation.fulfill()
         }) else {
