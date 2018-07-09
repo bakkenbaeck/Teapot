@@ -2,7 +2,6 @@ import Foundation
 
 /// A light-weight abstraction for URLSession.
 open class Teapot {
-
     open static var localizationBundle = Bundle(for: Teapot.self)
 
     /// The URL request verb to be passed to the URLRequest.
@@ -57,7 +56,6 @@ open class Teapot {
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
     @discardableResult open func get(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
-
         return self.execute(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
@@ -72,7 +70,6 @@ open class Teapot {
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
     @discardableResult open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
-
         return self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
@@ -101,7 +98,6 @@ open class Teapot {
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
     @discardableResult open func delete(_ path: String, parameters _: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
-
         return self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
     }
 
@@ -212,12 +208,12 @@ open class Teapot {
             guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else {
                 self.logger.errorLog("""
 
-                    ||
-                    || TEAPOT - REQUEST CONSTRUCTION ERROR
-                    || Could not get components for path \"\(String(describing: path))\"
-                    ||
+                ||
+                || TEAPOT - REQUEST CONSTRUCTION ERROR
+                || Could not get components for path \"\(String(describing: path))\"
+                ||
 
-                    """)
+                """)
 
                 throw TeapotError.invalidRequestPath
             }
@@ -229,12 +225,12 @@ open class Teapot {
         guard let url = baseComponents.url else {
             self.logger.errorLog("""
 
-                ||
-                || TEAPOT - REQUEST CONSTRUCTION ERROR
-                || Could not get URL from components: \(baseComponents)
-                ||
+            ||
+            || TEAPOT - REQUEST CONSTRUCTION ERROR
+            || Could not get URL from components: \(baseComponents)
+            ||
 
-                """)
+            """)
 
             throw TeapotError.invalidRequestPath
         }
@@ -262,22 +258,20 @@ open class Teapot {
             request.httpBody = parameters.data
         }
 
-        logger.incomingAndOutgoingDataLog("""
+        self.logger.incomingAndOutgoingDataLog("""
 
-            ||
-            || TEAPOT - OUTGOING REQUEST
-            || Headers:
-            || \(String(describing: request.allHTTPHeaderFields))
-            ||
-            || Contents:
-            || \(Logger.logString(from: request.httpBody))
-            ||
+        ||
+        || TEAPOT - OUTGOING REQUEST
+        || Headers:
+        || \(String(describing: request.allHTTPHeaderFields))
+        ||
+        || Contents:
+        || \(Logger.logString(from: request.httpBody))
+        ||
 
-            """)
+        """)
         return request
     }
-
-
 
     func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
         let task = self.session.dataTask(with: request) { [weak self] data, response, error in
@@ -295,7 +289,7 @@ open class Teapot {
                 let errorResponse = HTTPURLResponse(url: request.url!, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
                 let errorResult = NetworkResult(nil, errorResponse, teapotError)
                 completion(errorResult)
-                
+
                 return
             }
 

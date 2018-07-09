@@ -12,7 +12,6 @@ public extension Teapot {
         return "Authorization"
     }
 
-
     /// Converts a username, password pair into a basic authentication string.
     ///
     /// - Example: "Basic 0xfa0123456789086421af"

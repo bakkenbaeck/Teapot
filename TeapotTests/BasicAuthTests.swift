@@ -1,5 +1,5 @@
-import XCTest
 @testable import TeapotMac
+import XCTest
 
 class BasicAuthTests: XCTestCase {
     let username = "admin"
