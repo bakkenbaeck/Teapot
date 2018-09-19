@@ -260,7 +260,7 @@ class TeapotTests: XCTestCase {
             switch result {
             case .success(let image, let response):
                 guard
-                    let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name(rawValue: "app-draw-icon")),
+                    let localImage = Bundle(for: TeapotTests.self).image(forResource: NSImage.Name("app-draw-icon")),
                     let tiff = localImage.tiffRepresentation else {
                     XCTFail("Could not create local image TIFF")
                     expectation.fulfill()
