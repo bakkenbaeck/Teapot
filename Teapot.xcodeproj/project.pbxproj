@@ -21,6 +21,7 @@
 		9F7B896F1E51DA62009C192E /* Teapot+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7B896E1E51DA62009C192E /* Teapot+Images.swift */; };
 		9F7B89701E51DCC6009C192E /* Teapot+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7B896E1E51DA62009C192E /* Teapot+Images.swift */; };
 		9F7B89741E51E098009C192E /* app-draw-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9F7B89711E51E03C009C192E /* app-draw-icon.png */; };
+		9F893A8321524791001472F7 /* Teapot+iOSMultipartDataForImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1D8B741E89522B00EF8DEE /* Teapot+iOSMultipartDataForImage.swift */; };
 		9FB36EA41E7BE95900DB6F86 /* ResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB36EA31E7BE95900DB6F86 /* ResponseTests.swift */; };
 		9FBCA1081F9DD17900BFDF47 /* TeapotError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBCA1071F9DD17900BFDF47 /* TeapotError.swift */; };
 		9FBCA1091F9DD17900BFDF47 /* TeapotError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBCA1071F9DD17900BFDF47 /* TeapotError.swift */; };
@@ -336,6 +337,7 @@
 				9FBCA1081F9DD17900BFDF47 /* TeapotError.swift in Sources */,
 				9F2C23601FE8034100644152 /* Teapot+BasicAuth.swift in Sources */,
 				9FED01051E3A4FF6009A54B4 /* Teapot.swift in Sources */,
+				9F893A8321524791001472F7 /* Teapot+iOSMultipartDataForImage.swift in Sources */,
 				D197B176D5E1568F54764698 /* MockTeapot.swift in Sources */,
 				3363877220A07950009A7B26 /* Logger.swift in Sources */,
 			);

@@ -19,12 +19,12 @@ extension Teapot {
         resultData.append(disposition.data(using: .utf8)!)
 
         // actual image data
-        if let data = UIImagePNGRepresentation(image) {
+        if let data = image.pngData() {
             let type = "Content-Type: image/png\r\n\r\n"
             resultData.append(type.data(using: .utf8)!)
 
             resultData.append(data)
-        } else if let data = UIImageJPEGRepresentation(image, 1.0) {
+        } else if let data = image.jpegData(compressionQuality: 1.0) {
             let type = "Content-Type: image/jpg\r\n\r\n"
             resultData.append(type.data(using: .utf8)!)
 
