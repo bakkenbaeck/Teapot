@@ -9,10 +9,6 @@ extension URLResponse {
         return self.asHTTP.statusCode
     }
 
-    var allHeaderFields: [String: String] {
-        return self.asHTTP.allHeaderFields
-    }
-
     static func log(using logger: Logger?, _ data: Data?, _ response: URLResponse?, _ error: Error?) {
         guard let logger = logger else {
             // Can't log without a logger.

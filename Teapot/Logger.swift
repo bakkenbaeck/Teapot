@@ -96,9 +96,9 @@ public class Logger {
     public static func logHeaderString(from response: URLResponse?) -> String {
         guard let response = response else { return "[no response received]" }
 
-        guard !response.allHeaderFields.isEmpty else { return "[no headers available]" }
+        guard !response.asHTTP.allHeaderFields.isEmpty else { return "[no headers available]" }
 
-        let headerStrings = response.allHeaderFields.map { "\($0): \($1)" }
+        let headerStrings = response.asHTTP.allHeaderFields.map { "\($0): \($1)" }
         return headerStrings.joined(separator: "\n||\n\t")
     }
 }
