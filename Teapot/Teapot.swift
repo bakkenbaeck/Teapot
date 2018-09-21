@@ -178,12 +178,18 @@ open class Teapot {
 
                     if response.statusCode < 200 || response.statusCode > 299 {
                         let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus(response.statusCode))
-                        completion(errorResult)
+                        self.deliveryQueue.async {
+                            completion(errorResult)
+                        }
                     } else {
-                        completion(result)
+                        self.deliveryQueue.async {
+                            completion(result)
+                        }
                     }
                 default:
-                    completion(result)
+                    self.deliveryQueue.async {
+                        completion(result)
+                    }
                 }
             }
 
@@ -193,7 +199,9 @@ open class Teapot {
             let response = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: headerFields)!
             let result = NetworkImageResult(nil, response, TeapotError.invalidPayload)
 
-            completion(result)
+            self.deliveryQueue.async {
+                completion(result)
+            }
 
             return nil
         }
