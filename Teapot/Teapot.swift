@@ -38,10 +38,18 @@ open class Teapot {
 
     open var logger = Logger()
 
+    let deliveryQueue: DispatchQueue
+
     // MARK: - Initialiser
 
-    public init(baseURL: URL) {
+    /// Initialise a Teapot instance.
+    ///
+    /// - Parameters:
+    ///   - baseURL: the base URL against which request paths are evaluated.
+    ///   - deliveryQueue: Queue where callbacks are executed on. Defaults to the main queue.
+    public init(baseURL: URL, deliveryQueue: DispatchQueue = .main) {
         self.baseURL = baseURL
+        self.deliveryQueue = deliveryQueue
     }
 
     // MARK: - API
@@ -288,7 +296,10 @@ open class Teapot {
                 let teapotError = TeapotError.noResponse(withUnderlyingError: error)
                 let errorResponse = HTTPURLResponse(url: request.url!, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
                 let errorResult = NetworkResult(nil, errorResponse, teapotError)
-                completion(errorResult)
+
+                self?.deliveryQueue.async {
+                    completion(errorResult)
+                }
 
                 return
             }
@@ -309,7 +320,9 @@ open class Teapot {
                 result = NetworkResult(json, response as! HTTPURLResponse, nil)
             }
 
-            completion(result)
+            self?.deliveryQueue.async {
+                completion(result)
+            }
         }
 
         task.resume()
@@ -338,7 +351,9 @@ open class Teapot {
                 result = NetworkImageResult(image, response as! HTTPURLResponse, nil)
             }
 
-            completion(result)
+            self?.deliveryQueue.async {
+                completion(result)
+            }
         }
 
         self.runTaskQueue.async {
