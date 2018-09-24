@@ -38,10 +38,18 @@ open class Teapot {
 
     open var logger = Logger()
 
+    let defaultDeliveryQueue: DispatchQueue
+
     // MARK: - Initialiser
 
-    public init(baseURL: URL) {
+    /// Initialise a Teapot instance.
+    ///
+    /// - Parameters:
+    ///   - baseURL: the base URL against which request paths are evaluated.
+    ///   - defaultDeliveryQueue: Queue where callbacks are executed on. Defaults to the main queue. Can be overriden on a per-call basis by passing a different deliveryQueue to one of the verb methods.
+    public init(baseURL: URL, defaultDeliveryQueue: DispatchQueue = .main) {
         self.baseURL = baseURL
+        self.defaultDeliveryQueue = defaultDeliveryQueue
     }
 
     // MARK: - API
@@ -53,10 +61,12 @@ open class Teapot {
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - deliveryQueue: a DispatchQueue where the completion block will be called. If none is supplied, uses the Teapot's defaultDeliveryQueue.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
-    @discardableResult open func get(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
-        return self.execute(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+    @discardableResult open func get(_ path: String, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue? = nil, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+
+        return self.execute(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, deliveryQueue: deliveryQueue, completion: completion)
     }
 
     /// Perform a POST operation.
@@ -67,10 +77,12 @@ open class Teapot {
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - deliveryQueue: a DispatchQueue where the completion block will be called. If none is supplied, uses the Teapot's defaultDeliveryQueue.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
-    @discardableResult open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
-        return self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+    @discardableResult open func post(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue? = nil, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+
+        return self.execute(verb: .post, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, deliveryQueue: deliveryQueue, completion: completion)
     }
 
     /// Perform a PUT operation.
@@ -81,10 +93,12 @@ open class Teapot {
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - deliveryQueue: a DispatchQueue where the completion block will be called. If none is supplied, uses the Teapot's defaultDeliveryQueue.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
-    @discardableResult open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
-        return self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+    @discardableResult open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue? = nil, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+
+        return self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, deliveryQueue: deliveryQueue, completion: completion)
     }
 
     /// Perform a DELETE operation.
@@ -95,10 +109,12 @@ open class Teapot {
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - deliveryQueue: a DispatchQueue where the completion block will be called. If none is supplied, uses the Teapot's defaultDeliveryQueue.
     ///   - completion: The completion block, called with a NetworkResult once the request completes.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
-    @discardableResult open func delete(_ path: String, parameters _: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
-        return self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, completion: completion)
+    @discardableResult open func delete(_ path: String, parameters _: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue? = nil, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+
+        return self.execute(verb: .delete, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, deliveryQueue: deliveryQueue, completion: completion)
     }
 
     /*
@@ -117,13 +133,16 @@ open class Teapot {
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - deliveryQueue: a DispatchQueue where the completion block will be called. If none is supplied, uses the Teapot's defaultDeliveryQueue.
     ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
-    func execute(verb: Verb, path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+    func execute(verb: Verb, path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue?, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
         do {
             let request = try self.request(verb: verb, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-            let task = self.runTask(with: request) { (result: NetworkResult) in
+            let deliveryQueue = deliveryQueue ?? self.defaultDeliveryQueue
+
+            let task = self.runTask(with: request, deliveryQueue: deliveryQueue) { (result: NetworkResult) in
                 switch result {
                 case .success(let json, let response):
                     // Handle non-2xx status as error.
@@ -157,25 +176,35 @@ open class Teapot {
     ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
     ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0. See URLRequest doc for more.
     ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - deliveryQueue: a DispatchQueue where the completion block will be called. If none is supplied, uses the Teapot's defaultDeliveryQueue.
     ///   - completion: The completion block, called with a NetworkImageResult once the request completes, always on main queue.
     /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
-    @discardableResult func downloadImage(path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, completion: @escaping ((NetworkImageResult) -> Void)) -> URLSessionTask? {
+    @discardableResult func downloadImage(path: String? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue? = nil, completion: @escaping ((NetworkImageResult) -> Void)) -> URLSessionTask? {
+
+        let deliveryQueue = deliveryQueue ?? self.defaultDeliveryQueue
+
         do {
             let request = try self.request(verb: .get, path: path, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular)
 
-            let task = self.runTask(with: request) { (result: NetworkImageResult) in
+            let task = self.runTask(with: request, deliveryQueue: deliveryQueue) { (result: NetworkImageResult) in
                 switch result {
                 case .success(let image, let response):
                     // Handle non-2xx status as error.
 
                     if response.statusCode < 200 || response.statusCode > 299 {
                         let errorResult = NetworkImageResult(image, response, TeapotError.invalidResponseStatus(response.statusCode))
-                        completion(errorResult)
+                        deliveryQueue.async {
+                            completion(errorResult)
+                        }
                     } else {
-                        completion(result)
+                        deliveryQueue.async {
+                            completion(result)
+                        }
                     }
                 default:
-                    completion(result)
+                    deliveryQueue.async {
+                        completion(result)
+                    }
                 }
             }
 
@@ -185,7 +214,9 @@ open class Teapot {
             let response = HTTPURLResponse(url: self.baseURL, statusCode: 400, httpVersion: nil, headerFields: headerFields)!
             let result = NetworkImageResult(nil, response, TeapotError.invalidPayload)
 
-            completion(result)
+            deliveryQueue.async {
+                completion(result)
+            }
 
             return nil
         }
@@ -273,7 +304,7 @@ open class Teapot {
         return request
     }
 
-    func runTask(with request: URLRequest, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
+    func runTask(with request: URLRequest, deliveryQueue: DispatchQueue, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask {
         let task = self.session.dataTask(with: request) { [weak self] data, response, error in
             URLResponse.log(using: self?.logger, data, response, error)
 
@@ -288,7 +319,10 @@ open class Teapot {
                 let teapotError = TeapotError.noResponse(withUnderlyingError: error)
                 let errorResponse = HTTPURLResponse(url: request.url!, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
                 let errorResult = NetworkResult(nil, errorResponse, teapotError)
-                completion(errorResult)
+
+                deliveryQueue.async {
+                    completion(errorResult)
+                }
 
                 return
             }
@@ -309,7 +343,9 @@ open class Teapot {
                 result = NetworkResult(json, response as! HTTPURLResponse, nil)
             }
 
-            completion(result)
+            deliveryQueue.async {
+                completion(result)
+            }
         }
 
         task.resume()
@@ -317,7 +353,7 @@ open class Teapot {
         return task
     }
 
-    func runTask(with request: URLRequest, completion: @escaping ((NetworkImageResult) -> Void)) -> URLSessionTask {
+    func runTask(with request: URLRequest, deliveryQueue: DispatchQueue, completion: @escaping ((NetworkImageResult) -> Void)) -> URLSessionTask {
         let task = self.session.dataTask(with: request) { [weak self] data, response, error in
             URLResponse.log(using: self?.logger, data, response, error)
             guard let response = response else {
@@ -338,7 +374,9 @@ open class Teapot {
                 result = NetworkImageResult(image, response as! HTTPURLResponse, nil)
             }
 
-            completion(result)
+            deliveryQueue.async {
+                completion(result)
+            }
         }
 
         self.runTaskQueue.async {

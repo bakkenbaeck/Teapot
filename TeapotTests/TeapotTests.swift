@@ -264,6 +264,7 @@ class TeapotTests: XCTestCase {
                     let tiff = localImage.tiffRepresentation else {
                     XCTFail("Could not create local image TIFF")
                     expectation.fulfill()
+
                     return
                 }
 
