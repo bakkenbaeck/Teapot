@@ -93,7 +93,7 @@ let teapot = Teapot(baseURL: url, defaultDeliveryQueue: myBackgroundQueue)
 Of course some cases call for more complicated approaches, such as having almost every call go through on a background queue, except that one or two that interact with UIKit and needs to go on main. But we don't want the overhead of calling `DispatchQueue.main.async {}` just after having dispatched to the background queue. For such cases we also offer one-time overrides. You can override the delivery queue for a specific call like so:
 
 ```swift
-// This will call the results on the main queue, regarless of what default delivery queue is; just this once.
+// This will call the results on the main queue, regardless of what default delivery queue is; just this once.
 teapot.get("/get, deliveryQueue: .main) {}
 ```
 
