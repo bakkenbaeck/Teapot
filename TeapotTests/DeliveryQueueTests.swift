@@ -16,7 +16,7 @@ class DeliveryQueueTests: XCTestCase {
 
         let dispatchQueue = DispatchQueue(label: "dispatch.queue.here")
         let teapot = Teapot(baseURL: URL(string: "https://httpbin.org")!,
-                            deliveryQueue: dispatchQueue)
+                            defaultDeliveryQueue: dispatchQueue)
 
         teapot.get("/get") { result in
             XCTAssertTrue(!Thread.isMainThread)
@@ -35,7 +35,7 @@ class DeliveryQueueTests: XCTestCase {
 
         let dispatchQueue = DispatchQueue(label: "dispatch.queue.here")
         let teapot = Teapot(baseURL: URL(string: "https://httpbin.org")!,
-                            deliveryQueue: dispatchQueue)
+                            defaultDeliveryQueue: dispatchQueue)
 
         teapot.post("/post") { result in
             XCTAssertTrue(!Thread.isMainThread)
@@ -54,7 +54,7 @@ class DeliveryQueueTests: XCTestCase {
 
         let dispatchQueue = DispatchQueue(label: "dispatch.queue.here")
         let teapot = Teapot(baseURL: URL(string: "https://httpbin.org")!,
-                            deliveryQueue: dispatchQueue)
+                            defaultDeliveryQueue: dispatchQueue)
 
         teapot.put("/put") { result in
             XCTAssertTrue(!Thread.isMainThread)
@@ -73,7 +73,7 @@ class DeliveryQueueTests: XCTestCase {
 
         let dispatchQueue = DispatchQueue(label: "dispatch.queue.here")
         let teapot = Teapot(baseURL: URL(string: "https://httpbin.org")!,
-                            deliveryQueue: dispatchQueue)
+                            defaultDeliveryQueue: dispatchQueue)
 
         teapot.delete("/delete") { result in
             XCTAssertTrue(!Thread.isMainThread)
@@ -92,7 +92,7 @@ class DeliveryQueueTests: XCTestCase {
 
         let dispatchQueue = DispatchQueue(label: "dispatch.queue.here")
         let teapot = Teapot(baseURL: URL(string: "https://httpbin.org")!,
-                            deliveryQueue: dispatchQueue)
+                            defaultDeliveryQueue: dispatchQueue)
 
         teapot.downloadImage { result in
             XCTAssertTrue(!Thread.isMainThread)

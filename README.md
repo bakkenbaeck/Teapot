@@ -58,7 +58,7 @@ let basicAuthHeader = teapot.basicAuthenticationHeader(username:  "", password: 
 ```
 
 ### Teapot itself
-Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method.
+Our cutely named Teapot is the wrapper itself. It’s instantiated with a base URL and an optional delivery queue (more on that below) and exposes four main methods: a `get`, a `post`, a `put`, and a `delete` method; as well as a `downloadImage` helper method.
 
 ### Example API client
 
@@ -81,6 +81,20 @@ class APIClient {
         }
     }
 }
+```
+
+### Queue management
+By default Teapot will return everything on the main queue. This can be overridden for every call at initialisation time by instantiating it with a new default delivery queue.
+
+```swift
+let teapot = Teapot(baseURL: url, defaultDeliveryQueue: myBackgroundQueue)
+```
+
+Of course some cases call for more complicated approaches, such as having almost every call go through on a background queue, except that one or two that interact with UIKit and needs to go on main. But we don't want the overhead of calling `DispatchQueue.main.async {}` just after having dispatched to the background queue. For such cases we also offer one-time overrides. You can override the delivery queue for a specific call like so:
+
+```swift
+// This will call the results on the main queue, regarless of what default delivery queue is; just this once.
+teapot.get("/get, deliveryQueue: .main) {}
 ```
 
 ### Cancelling, suspending, resuming, and so on…
@@ -132,11 +146,11 @@ Teapot has a simple logger that will log out certain things under the hood. This
 
 The default log level is `.none` - That is, logs will neither be generated nor printed out. 
 
-Other log levels, in ascending order of how much log barf they fill your console with, are: 
+Other log levels, in ascending order of how much log noise they fill your console with, are: 
 
 - `error` - Logs any error which occurs at the `Teapot` level. 
 - `incomingData` - Logs data received from a server
-- `incomingAndOutgoingData` - Logs data both recieved from a server and being sent to a server. 
+- `incomingAndOutgoingData` - Logs data both received from a server and being sent to a server. 
 
 Log levels are ascending: If you set a `logger`'s log level to `incomingData`, both `incomingData` level logs and `error` level logs will print out. 
 
