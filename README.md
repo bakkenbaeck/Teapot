@@ -183,7 +183,7 @@ mockedFailingTeapot.get("/get") { result in
 }
 ```
 
-### Overriding Specified Endpoints With A Mock
+### Overriding specified endpoints with a mock
 
 Occasionally, you will need to hit an endpoint such as retrieving a timestamp or an `XSRF` token prior to making your actual call. 
 
