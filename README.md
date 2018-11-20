@@ -9,6 +9,20 @@ A light-weight URLSession wrapper for building simple API clients.
 
 Teapot consists of three simple structures: a JSON optional-like container, a NetworkResult container, and the Teapot itself, that acts as a nice thin wrapper around URLSession.
 
+## Installation
+
+Teapot is currently available through both Carthage as well as Cocoapods.
+
+Add it to your `Podfile`:
+```ruby
+	pod 'Teapot', '2.0.1`
+```
+
+Or `Cartfile`:
+```
+	github "BakkenBaeck/Teapot" >= 2.0.1
+```
+
 ### JSON
 The `JSON` structure is simple enum with two cases: dictionary and array. The API is designed considering that the routing model should know if the JSON will be a dictionary or an array, but also to accommodate for cases where they won’t.
 
