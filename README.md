@@ -15,12 +15,12 @@ Teapot is currently available through both Carthage as well as Cocoapods.
 
 Add it to your `Podfile`:
 ```ruby
-	pod 'Teapot', '2.0.1`
+pod 'Teapot', '2.0.1`
 ```
 
 Or `Cartfile`:
-```
-	github "BakkenBaeck/Teapot" >= 2.0.1
+```ruby
+github "BakkenBaeck/Teapot" >= 2.0.1
 ```
 
 ### JSON
