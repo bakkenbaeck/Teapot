@@ -206,61 +206,63 @@ Here is an example of an API which uses a `Teapot` instance to do something like
 ```swift 
 class API {
  
-    static var currentTeapot: Teapot!
+  static var currentTeapot: Teapot!
 
-    private static func getTimestamp(completion: (_ timestamp: Int?, error: TeapotError?) -> Void) {
-		currentTeapot.get("/timestamp") { result in 
-			switch result {
-			case .success(let _, response): 
-				guard let timestamp = /* something from the response */ else {
-					let timestampParseError = TeapotError(type: .invalidMockFile, 
-					                					  description: "Error parsing timestamp",
-					                					  responseStatus: response.statusCode, 
-					                					  underlyingError: nil)
-					completion(nil, timestampParseError)
-					return
-				}
+  private static func getTimestamp(completion: (_ timestamp: Int?, error: TeapotError?) -> Void) {
+    currentTeapot.get("/timestamp") { result in 
+      switch result {
+      case .success(let _, response): 
+        guard let timestamp = /* something from the response */ else {
+          let timestampParseError = TeapotError(type: .invalidMockFile, 
+          description: "Error parsing timestamp",
+          responseStatus: response.statusCode, 
+          underlyingError: nil)
+          completion(nil, timestampParseError)
+          return
+        }
 				
-				completion(timestamp, nil)
-			case .failure(let _, _, error):
-				let timestampFetchError = TeapotError(type: error.type,
-				                                      description: "Error fetching timestamp",
-				                                      responseStatus: error.responseStatus,
-				                                      underlyingError: error)
-				completion(nil, timestampFetchError) 
-			}
-		}
-    } 
-    
-    static func fetchSecureString(completion: (_ secureString: String?, error: TeapotError?) -> Void) {
-		getTimestamp { timestamp, error in 
-			guard let timestamp = timestamp else {
-    			completion (nil, error)
-    			return 
-    		}    		
-   			let headers = [ "Timestamp" : timestamp ]
-			currentTeapot.get("/something_secure", headerFields: headers) { result in 
-				switch result {
-				case .success(let _, response) { 
-					guard let secureString = /* something from the response */ else {
-						let stringParseError = TeapotError(type: .invalidMockFile,
-						                                   description: "Error parsing secure string",
-						                                   responseStatus: response.statusCode,
-						                                   underlyingError: nil)
-						completion(nil, stringParseError)
-						return 
-					}
-					completion(secureString, nil)
-				case .failure(let _, _, error): {
-					let stringFetchError = TeapotError(type: error.type,
-							    					   description: "Error fetching secure string",
-							    					   responseStatus: error.responseStatus,
-							    					   underlyingError: error)
-					completion(nil, stringFetchError)
-				}
-			}
-		}
+        completion(timestamp, nil)
+      case .failure(let _, _, error):
+        let timestampFetchError = TeapotError(type: error.type,
+        description: "Error fetching timestamp",
+        responseStatus: error.responseStatus,
+        underlyingError: error)
+        completion(nil, timestampFetchError) 
+      }
     }
+  } 
+    
+  static func fetchSecureString(completion: (_ secureString: String?, error: TeapotError?) -> Void) {
+    getTimestamp { timestamp, error in 
+      guard let timestamp = timestamp else {
+        completion (nil, error)
+        return 
+      }    		
+      let headers = [ "Timestamp" : timestamp ]
+      currentTeapot.get("/something_secure", headerFields: headers) { result in 
+        switch result {
+          case .success(let _, response) { 
+            guard let secureString = /* something from the response */ else {
+              let stringParseError = TeapotError(type: .invalidMockFile,
+              description: "Error parsing secure string",
+              responseStatus: response.statusCode,
+              underlyingError: nil)
+              completion(nil, stringParseError)
+              return 
+            }
+            completion(secureString, nil)
+            case .failure(let _, _, error): {
+              let stringFetchError = TeapotError(type: error.type,
+              description: "Error fetching secure string",
+              responseStatus: error.responseStatus,
+              underlyingError: error)
+              completion(nil, stringFetchError)
+            }
+          }
+        }
+      }
+    }
+  }
 }
 ```
 
