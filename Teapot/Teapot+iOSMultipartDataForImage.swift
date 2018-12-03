@@ -1,3 +1,4 @@
+#if os(iOS) || os(watchOS) || os(tvOS)
 import UIKit
 
 extension Teapot {
@@ -73,3 +74,5 @@ extension Teapot {
         return resultData
     }
 }
+
+#endif
