@@ -26,7 +26,11 @@ open class Teapot {
         return queue
     }()
 
-    open var configuration = URLSessionConfiguration.default
+    open var configuration = URLSessionConfiguration.default {
+        didSet {
+            session = URLSession(configuration: self.configuration, delegate: nil, delegateQueue: self.queue)
+        }
+    }
 
     open lazy var session: URLSession = {
         let session = URLSession(configuration: self.configuration, delegate: nil, delegateQueue: self.queue)

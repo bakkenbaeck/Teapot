@@ -15,6 +15,18 @@ class TeapotTests: XCTestCase {
         super.tearDown()
     }
 
+    func testConfigurationChange() {
+        XCTAssertEqual(teapot?.session.configuration.allowsCellularAccess, true)
+        XCTAssertEqual(teapot?.configuration.allowsCellularAccess, true)
+
+        let configuration = teapot!.configuration
+        configuration.allowsCellularAccess = false
+        teapot?.configuration = configuration
+
+        XCTAssertEqual(teapot?.configuration.allowsCellularAccess, false)
+        XCTAssertEqual(teapot?.session.configuration.allowsCellularAccess, false)
+    }
+
     func testGet() {
         let expectation = self.expectation(description: "Get")
 
