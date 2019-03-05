@@ -246,7 +246,7 @@ open class Teapot {
                     || Could not get components for path \"\(String(describing: path))\"
                     ||
 
-                    """)
+                """)
 
                 throw TeapotError.invalidRequestPath
             }
@@ -276,7 +276,7 @@ open class Teapot {
 
         if let headerFields = headerFields {
             for headerField in headerFields {
-                if headerField.key == "Content-Type" {
+                if headerField.key.lowercased() == "content-type" {
                     hasContentType = true
                 }
                 request.setValue(headerField.value, forHTTPHeaderField: headerField.key)
