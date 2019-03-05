@@ -18,25 +18,15 @@ open class Teapot {
         DispatchQueue(label: "com.backkenbaeck.Teapot.RunTaskQueue", qos: .background)
     }()
 
-    open lazy var queue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.name = "no.bakkenbaeck.NetworkQueue"
-        queue.qualityOfService = .userInitiated
+    open var queue: OperationQueue
 
-        return queue
-    }()
-
-    open var configuration = URLSessionConfiguration.default {
+    open var configuration: URLSessionConfiguration {
         didSet {
             session = URLSession(configuration: self.configuration, delegate: nil, delegateQueue: self.queue)
         }
     }
 
-    open lazy var session: URLSession = {
-        let session = URLSession(configuration: self.configuration, delegate: nil, delegateQueue: self.queue)
-
-        return session
-    }()
+    open var session: URLSession
 
     open var baseURL: URL
 
@@ -54,6 +44,14 @@ open class Teapot {
     public init(baseURL: URL, defaultDeliveryQueue: DispatchQueue = .main) {
         self.baseURL = baseURL
         self.defaultDeliveryQueue = defaultDeliveryQueue
+
+        self.queue = OperationQueue()
+        self.queue.name = "no.bakkenbaeck.NetworkQueue"
+        self.queue.qualityOfService = .userInitiated
+
+        self.configuration = URLSessionConfiguration.default
+
+        self.session = URLSession(configuration: self.configuration, delegate: nil, delegateQueue: self.queue)
     }
 
     // MARK: - API
@@ -243,12 +241,12 @@ open class Teapot {
             guard let pathComponents = URLComponents(url: pathURL, resolvingAgainstBaseURL: true) else {
                 self.logger.errorLog("""
 
-                ||
-                || TEAPOT - REQUEST CONSTRUCTION ERROR
-                || Could not get components for path \"\(String(describing: path))\"
-                ||
+                    ||
+                    || TEAPOT - REQUEST CONSTRUCTION ERROR
+                    || Could not get components for path \"\(String(describing: path))\"
+                    ||
 
-                """)
+                    """)
 
                 throw TeapotError.invalidRequestPath
             }
@@ -260,12 +258,12 @@ open class Teapot {
         guard let url = baseComponents.url else {
             self.logger.errorLog("""
 
-            ||
-            || TEAPOT - REQUEST CONSTRUCTION ERROR
-            || Could not get URL from components: \(baseComponents)
-            ||
+                ||
+                || TEAPOT - REQUEST CONSTRUCTION ERROR
+                || Could not get URL from components: \(baseComponents)
+                ||
 
-            """)
+                """)
 
             throw TeapotError.invalidRequestPath
         }
@@ -278,7 +276,7 @@ open class Teapot {
 
         if let headerFields = headerFields {
             for headerField in headerFields {
-                if headerField.key.lowercased() == "content-type" {
+                if headerField.key == "Content-Type" {
                     hasContentType = true
                 }
                 request.setValue(headerField.value, forHTTPHeaderField: headerField.key)
@@ -295,16 +293,16 @@ open class Teapot {
 
         self.logger.incomingAndOutgoingDataLog("""
 
-        ||
-        || TEAPOT - OUTGOING REQUEST
-        || Headers:
-        || \(String(describing: request.allHTTPHeaderFields))
-        ||
-        || Contents:
-        || \(Logger.logString(from: request.httpBody))
-        ||
+            ||
+            || TEAPOT - OUTGOING REQUEST
+            || Headers:
+            || \(String(describing: request.allHTTPHeaderFields))
+            ||
+            || Contents:
+            || \(Logger.logString(from: request.httpBody))
+            ||
 
-        """)
+            """)
         return request
     }
 
