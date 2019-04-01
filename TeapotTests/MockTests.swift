@@ -146,7 +146,7 @@ class MockTests: XCTestCase {
         mockedTeapot.get("/get") { result in
             switch result {
             case .success:
-                XCTFail("Request suceceeded which should not have!")
+                XCTFail("Request succeeded which should not have!")
             case .failure(_, let response, let error):
                 XCTAssertEqual(response.statusCode, 400)
                 XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: nil))
@@ -168,7 +168,7 @@ class MockTests: XCTestCase {
         mockedTeapot.get("/get", headerFields: wrongHeaders) { result in
             switch result {
             case .success:
-                XCTFail("Request suceceeded which should not have!")
+                XCTFail("Request succeeded which should not have!")
             case .failure(_, let response, let error):
                 XCTAssertEqual(response.statusCode, 400)
                 XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: wrongHeaders))
@@ -213,7 +213,7 @@ class MockTests: XCTestCase {
         mockedTeapot.get("/get", headerFields: wrongHeaders) { wrongHeaderResult in
             switch wrongHeaderResult {
             case .success:
-                XCTFail("Request suceceeded which should not have!")
+                XCTFail("Request succeeded which should not have!")
             case .failure(_, let response, let error):
                 XCTAssertEqual(response.statusCode, 400)
                 XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: wrongHeaders))

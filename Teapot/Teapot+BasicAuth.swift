@@ -8,7 +8,7 @@ extension String {
 
 public extension Teapot {
     /// The basic authentication header key value. Use this as the key in your headerFields dictionary.
-    public var basicAuthenticationHeaderKey: String {
+    var basicAuthenticationHeaderKey: String {
         return "Authorization"
     }
 
@@ -21,8 +21,10 @@ public extension Teapot {
     ///   - username: the basic auth username
     ///   - password: the basic auth password
     /// - Returns: basic authentication string with the format "Basic hexValue".
-    public func basicAuthenticationValue(username: String, password: String) -> String? {
-        guard let encodedString = "\(username):\(password)"._basicAuthenticationString else { return nil }
+    func basicAuthenticationValue(username: String, password: String) -> String? {
+        guard let encodedString = "\(username):\(password)"._basicAuthenticationString else {
+            return nil
+        }
 
         return "Basic \(encodedString)"
     }
@@ -36,8 +38,10 @@ public extension Teapot {
     ///   - username: the basic auth username
     ///   - password: the basic auth password
     /// - Returns: bais authentication header dictionary or nil.
-    public func basicAuthenticationHeader(username: String, password: String) -> [String: String] {
-        guard let basicAuthValue = self.basicAuthenticationValue(username: username, password: password) else { return [:] }
+    func basicAuthenticationHeader(username: String, password: String) -> [String: String] {
+        guard let basicAuthValue = self.basicAuthenticationValue(username: username, password: password) else {
+            return [:]
+        }
 
         return [self.basicAuthenticationHeaderKey: basicAuthValue]
     }

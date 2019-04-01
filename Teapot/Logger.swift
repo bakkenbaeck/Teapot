@@ -37,7 +37,7 @@ public class Logger {
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
     public func incomingAndOutgoingDataLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return self.log(level: .incomingAndOutgoingData, items: items, file: file, line: line, at: date)
+        return self.log(level: .incomingAndOutgoingData, items: items(), file: file, line: line, at: date)
     }
 
     /// Logs an item if the log level is `incomingOnly` or higher.
@@ -50,7 +50,7 @@ public class Logger {
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
     public func incomingDataLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return self.log(level: .incomingData, items: items, file: file, line: line, at: date)
+        return self.log(level: .incomingData, items: items(), file: file, line: line, at: date)
     }
 
     /// Logs an item if the log level is `error` or higher.
@@ -63,7 +63,7 @@ public class Logger {
     /// - Returns: A boolean indicating whether the log printed or not, mostly for testing purposes.
     @discardableResult
     public func errorLog(_ items: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line, at date: Date = Date()) -> Bool {
-        return self.log(level: .error, items: items, file: file, line: line, at: date)
+        return self.log(level: .error, items: items(), file: file, line: line, at: date)
     }
 
     private func log(level: LogLevel, items: @autoclosure () -> String, file: StaticString, line: UInt, at date: Date) -> Bool {

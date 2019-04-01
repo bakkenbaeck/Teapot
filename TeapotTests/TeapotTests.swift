@@ -313,6 +313,8 @@ class TeapotTests: XCTestCase {
             XCTFail("Cancelled task is still running!")
         case .suspended:
             XCTFail("Cancelled task is only suspended!")
+        @unknown default:
+            XCTFail("Unhandled task state: \(task.state)")
         }
     }
 }
