@@ -7,6 +7,7 @@ open class MockTeapot: Teapot {
         case ok = 200
         case noContent = 204
         case created = 201
+        case badRequest = 400
         case unauthorized = 401
         case forbidden = 403
         case notFound = 404
