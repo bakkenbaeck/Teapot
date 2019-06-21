@@ -1,6 +1,6 @@
 Pod::Spec.new do | spec |
   spec.name = "Teapot"
-  spec.version = "2.1.0"
+  spec.version = "2.1.1"
   spec.summary = "A light-weight URLSession wrapper for building simple API clients"
   spec.homepage = "https://github.com/bakkenbaeck/Teapot"
   spec.license = { type: 'MIT' }
