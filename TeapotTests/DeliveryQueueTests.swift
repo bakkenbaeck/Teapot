@@ -9,6 +9,10 @@
 @testable import TeapotMac
 import XCTest
 
+extension TimeInterval {
+    static let defaultTimeout = 5.0
+}
+
 class DeliveryQueueTests: XCTestCase {
 
     func testDeliveryOnQueueGet() {
@@ -27,7 +31,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryOnQueuePost() {
@@ -46,7 +50,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-       self.waitForExpectations(timeout: 20.0)
+       self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryOnQueuePut() {
@@ -65,7 +69,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryOnQueueDelete() {
@@ -84,7 +88,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryOnQueueImage() {
@@ -103,7 +107,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
     
     func testDeliveryOnMain() {
@@ -116,7 +120,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryQueueOverrideGet() {
@@ -133,7 +137,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryQueueOverridePost() {
@@ -150,7 +154,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryQueueOverridePut() {
@@ -167,7 +171,7 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDeliveryQueueOverrideDelete() {
@@ -184,6 +188,6 @@ class DeliveryQueueTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 }

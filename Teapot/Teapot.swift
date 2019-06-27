@@ -164,7 +164,7 @@ open class Teapot {
                 case .success(let json, let response):
                     // Handle non-2xx status as error.
                     if response.statusCode < 200 || response.statusCode > 299 {
-                        let errorResult = NetworkResult(json, response, TeapotError.invalidResponseStatus(response.statusCode))
+                        let errorResult: NetworkResult = .failure(json, response, TeapotError.invalidResponseStatus(response.statusCode))
                         completion(errorResult)
                     } else {
                         completion(result)
@@ -178,7 +178,7 @@ open class Teapot {
         } catch {
             // Catch exceptions and handle them as errors for the client.
             let response = HTTPURLResponse(url: self.baseURL.appendingPathComponent(path), statusCode: 400, httpVersion: nil, headerFields: headerFields)!
-            let result = NetworkResult(nil, response, TeapotError.invalidPayload)
+            let result: NetworkResult = .failure(nil, response, TeapotError.invalidPayload)
 
             completion(result)
 
@@ -334,8 +334,7 @@ open class Teapot {
                 }
 
                 let teapotError = TeapotError.noResponse(withUnderlyingError: error)
-                let errorResponse = HTTPURLResponse(url: request.url!, statusCode: 400, httpVersion: nil, headerFields: request.allHTTPHeaderFields)!
-                let errorResult = NetworkResult(nil, errorResponse, teapotError)
+                let errorResult: NetworkResult = .failure(nil, nil, teapotError)
 
                 deliveryQueue.async {
                     completion(errorResult)
@@ -355,9 +354,9 @@ open class Teapot {
 
             let result: NetworkResult
             if let underlyingError = error {
-                result = NetworkResult(json, response as! HTTPURLResponse, TeapotError.dataTaskError(withUnderLyingError: underlyingError))
+                result = .failure(json, response as? HTTPURLResponse, TeapotError.dataTaskError(withUnderLyingError: underlyingError))
             } else {
-                result = NetworkResult(json, response as! HTTPURLResponse, nil)
+                result = .success(json, response as! HTTPURLResponse)
             }
 
             deliveryQueue.async {

@@ -71,7 +71,7 @@ class MockTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(_, let response, _):
-                XCTAssertEqual(response.statusCode, 401)
+                XCTAssertEqual(response?.statusCode, 401)
             }
         }
     }
@@ -148,7 +148,7 @@ class MockTests: XCTestCase {
             case .success:
                 XCTFail("Request succeeded which should not have!")
             case .failure(_, let response, let error):
-                XCTAssertEqual(response.statusCode, 400)
+                XCTAssertEqual(response?.statusCode, 400)
                 XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: nil))
             }
         }
@@ -170,7 +170,7 @@ class MockTests: XCTestCase {
             case .success:
                 XCTFail("Request succeeded which should not have!")
             case .failure(_, let response, let error):
-                XCTAssertEqual(response.statusCode, 400)
+                XCTAssertEqual(response?.statusCode, 400)
                 XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: wrongHeaders))
             }
         }
@@ -215,7 +215,7 @@ class MockTests: XCTestCase {
             case .success:
                 XCTFail("Request succeeded which should not have!")
             case .failure(_, let response, let error):
-                XCTAssertEqual(response.statusCode, 400)
+                XCTAssertEqual(response?.statusCode, 400)
                 XCTAssertEqual(error, TeapotError.incorrectHeaders(expected: expectedHeaders, received: wrongHeaders))
             }
         }
