@@ -9,6 +9,7 @@ open class Teapot {
         case get = "GET"
         case post = "POST"
         case put = "PUT"
+        case patch = "PATCH"
         case delete = "DELETE"
     }
 
@@ -99,6 +100,22 @@ open class Teapot {
     @discardableResult open func put(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue? = nil, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
 
         return self.execute(verb: .put, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, deliveryQueue: deliveryQueue, completion: completion)
+    }
+
+    /// Perform a PATCH operation.
+    ///
+    /// - Parameters:
+    ///   - path: The relative path for the API call. Appended to the baseURL.
+    ///   - parameters: a JSON object, to be sent as the HTTP body data.
+    ///   - headerFields: A [String: String] dictionary mapping HTTP header field names to values. Defaults to nil.
+    ///   - timeoutInterval: How many seconds before the request times out. Defaults to 15.0
+    ///   - allowsCellular: a Bool indicating if this request should be allowed to run over cellular network or WLAN only.
+    ///   - deliveryQueue: a DispatchQueue where the completion block will be called. If none is supplied, uses the Teapot's defaultDeliveryQueue.
+    ///   - completion: The completion block, called with a NetworkResult once the request completes, always on main queue.
+    /// - Returns: A URLSessionTask, if the request was successfully created, and nil otherwise.
+    @discardableResult open func patch(_ path: String, parameters: RequestParameter? = nil, headerFields: [String: String]? = nil, timeoutInterval: TimeInterval = 15.0, allowsCellular: Bool = true, deliveryQueue: DispatchQueue? = nil, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
+
+        return self.execute(verb: .patch, path: path, parameters: parameters, headerFields: headerFields, timeoutInterval: timeoutInterval, allowsCellular: allowsCellular, deliveryQueue: deliveryQueue, completion: completion)
     }
 
     /// Perform a DELETE operation.

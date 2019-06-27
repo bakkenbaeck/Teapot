@@ -56,6 +56,27 @@ class TeapotTests: XCTestCase {
         self.waitForExpectations(timeout: 20.0)
     }
 
+    func testPatch() {
+        let expectation = self.expectation(description: "Patch")
+
+        self.teapot?.patch("/patch") { result in
+
+            switch result {
+            case .success(let json, let response):
+                XCTAssertEqual(response.statusCode, 200)
+                XCTAssertNotNil(json)
+            case .failure(_, _, let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+
+            XCTAssertNotNil(result)
+
+            expectation.fulfill()
+        }
+
+        self.waitForExpectations(timeout: 20.0)
+    }
+
     func testPostWithJSONData() {
         let expectation = self.expectation(description: "Put with JSON")
 
