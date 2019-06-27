@@ -77,7 +77,11 @@ open class MockTeapot: Teapot {
 
     override func execute(verb: Teapot.Verb, path: String, parameters: RequestParameter?, headerFields: [String: String]?, timeoutInterval: TimeInterval, allowsCellular: Bool, deliveryQueue: DispatchQueue?, completion: @escaping ((NetworkResult) -> Void)) -> URLSessionTask? {
         guard self.checkHeadersAgainstExpected(headers: headerFields, for: path) else {
-            let errorResult = NetworkResult(nil, HTTPURLResponse(url: URL(string: path)!, statusCode: 400, httpVersion: nil, headerFields: nil)!, TeapotError.incorrectHeaders(expected: headersToCheckFor, received: headerFields))
+            let httpResponse = HTTPURLResponse(url: URL(string: path)!, statusCode: 400, httpVersion: nil, headerFields: nil)!
+            let teapotError = TeapotError.incorrectHeaders(expected: headersToCheckFor, received: headerFields)
+
+            let errorResult: NetworkResult = .failure(nil, httpResponse, teapotError)
+
             completion(errorResult)
             return nil
         }
@@ -91,7 +95,14 @@ open class MockTeapot: Teapot {
                 mockedError = TeapotError.invalidResponseStatus(self.statusCode.rawValue)
             }
 
-            let networkResult = NetworkResult(requestParameter, response!, mockedError)
+            let networkResult: NetworkResult
+
+            if let response = response, mockedError == nil {
+                networkResult = .success(requestParameter, response)
+            } else {
+                // we use ! as we've already stablished the error is non-nil before-hand.
+                networkResult = .failure(requestParameter, response, mockedError!)
+            }
 
             completion(networkResult)
         }

@@ -32,7 +32,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testPost() {
@@ -53,7 +53,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testPatch() {
@@ -74,7 +74,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testPostWithJSONData() {
@@ -131,7 +131,7 @@ class TeapotTests: XCTestCase {
             XCTAssertNotNil(result)
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testPut() {
@@ -152,7 +152,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testPutWithJSONData() {
@@ -209,7 +209,7 @@ class TeapotTests: XCTestCase {
             XCTAssertNotNil(result)
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testDelete() {
@@ -231,7 +231,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testQuery() {
@@ -242,14 +242,14 @@ class TeapotTests: XCTestCase {
             case .success:
                 break
             case .failure(_, let response, _):
-                XCTAssertEqual(response.statusCode, 404)
+                XCTAssertEqual(response?.statusCode, 404)
             }
 
             XCTAssertNotNil(result)
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testEscapedQuery() {
@@ -270,7 +270,7 @@ class TeapotTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testImage() {
@@ -298,16 +298,16 @@ class TeapotTests: XCTestCase {
             }
         }
 
-        self.waitForExpectations(timeout: 20.0)
+        self.waitForExpectations(timeout: .defaultTimeout)
     }
 
     func testCancelRequest() {
-        let invertedExpecation = expectation(description: "Request completed")
-        invertedExpecation.isInverted = true
+        let invertedExpectation = expectation(description: "Request completed")
+        invertedExpectation.isInverted = true
 
         guard let task = self.teapot?.get("/get", completion: { (_: NetworkResult) in
             // This should not happen, so we fulfill the inverted expectation
-            invertedExpecation.fulfill()
+            invertedExpectation.fulfill()
         }) else {
             XCTFail("Could not create task")
             return
@@ -337,5 +337,27 @@ class TeapotTests: XCTestCase {
         @unknown default:
             XCTFail("Unhandled task state: \(task.state)")
         }
+    }
+
+    func testTimeout() {
+        let expectation = self.expectation(description: "Timed out")
+
+        self.teapot = Teapot(baseURL: URL(string: "https://0.0.0.0")!)
+        self.teapot?.get("/", timeoutInterval: 0.5) { result in
+            switch result {
+            case .success(_, _):
+                XCTFail("Unexpected success. Should've timed out.")
+            case let .failure(_, response, error):
+                XCTAssertNotNil(error)
+                XCTAssertNil(response)
+                XCTAssertEqual(error.type, .noResponse)
+            }
+
+            XCTAssertNotNil(result)
+
+            expectation.fulfill()
+        }
+
+        self.waitForExpectations(timeout: 1.0)
     }
 }
