@@ -8,7 +8,7 @@ Pod::Spec.new do | spec |
 
   spec.ios.deployment_target = '10.0'
   spec.requires_arc = true
-  spec.source = { git: 'https://github.com/bakkenbaeck/Teapot.git', tag: "#{spec.version}" }
+  spec.source = { git: 'https://github.com/elland/Teapot.git', tag: "#{spec.version}" }
   spec.source_files = 'Teapot/*.swift'
   spec.swift_version = '4.2'
 end
