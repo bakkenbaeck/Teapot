@@ -100,7 +100,7 @@ open class MockTeapot: Teapot {
             if let response = response, mockedError == nil {
                 networkResult = .success(requestParameter, response)
             } else {
-                // we use ! as we've already stablished the error is non-nil before-hand.
+                // we use ! as we've already established the error is non-nil before-hand.
                 networkResult = .failure(requestParameter, response, mockedError!)
             }
 

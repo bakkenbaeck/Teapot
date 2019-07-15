@@ -19,14 +19,6 @@ public enum NetworkResult {
     case success(RequestParameter?, HTTPURLResponse)
 
     case failure(RequestParameter?, HTTPURLResponse?, TeapotError)
-
-//    public init(_ json: RequestParameter?, _ response: HTTPURLResponse?, _ error: TeapotError? = nil) {
-//        if let error = error {
-//            self = .failure(json, response, error)
-//        } else {
-//            self = .success(json, response)
-//        }
-//    }
 }
 
 public enum NetworkImageResult {
